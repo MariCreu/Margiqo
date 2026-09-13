@@ -70,7 +70,7 @@ async function flowA_demoToEarlyAccess(browser) {
 
   await page.screenshot({ path: path.join(shotsDir, "a3-early-access.png"), fullPage: true });
 
-  const capturedLeads = await page.evaluate(() => JSON.parse(localStorage.getItem("profitdoctor_local_leads") || "[]"));
+  const capturedLeads = await page.evaluate(() => JSON.parse(localStorage.getItem("margiqo_local_leads") || "[]"));
   assert.equal(capturedLeads.length, 2, "one submission for the email, one for the willingness answer");
   assert.equal(capturedLeads[0].email, "merchant@example.com");
   assert.equal(capturedLeads[0].usedDemo, true);

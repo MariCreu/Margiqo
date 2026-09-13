@@ -65,11 +65,14 @@ tested against real merchant data.
   — there's no database to update in place. Fine for reading manually or
   in a spreadsheet import; would need a real backend with an upsert to
   merge cleanly.
-- **SEO scaffolding uses a placeholder domain** (`your-domain-here.example`)
-  in canonical/OpenGraph tags, `robots.txt`, and `sitemap.xml` — must be
-  replaced before going live (see docs/DEPLOYMENT.md). No Open Graph image
-  was designed — a text-only preview card is what will render when shared,
-  which is an acceptable placeholder, not a finished asset.
+- **The real domain (margiqo.com) isn't connected to a live deployment
+  yet.** SEO scaffolding (canonical/OpenGraph tags, `robots.txt`,
+  `sitemap.xml`) already points at `https://margiqo.com/`, but no DNS
+  record was added and no static host was actually deployed to — this
+  session didn't have registrar or hosting account access. See
+  docs/DEPLOYMENT.md. No Open Graph image was designed — a text-only
+  preview card is what will render when shared, which is an acceptable
+  placeholder, not a finished asset.
 - **English only.** No i18n was added — out of scope by design for this
   phase, not an oversight.
 

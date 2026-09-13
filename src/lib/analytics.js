@@ -18,7 +18,7 @@ function sanitizeProps(props) {
 export function track(eventName, props = {}) {
   const event = { event: eventName, ts: Date.now(), ...sanitizeProps(props) };
   buffer.push(event);
-  if (typeof console !== "undefined" && console.debug) console.debug("[profitdoctor:event]", event);
+  if (typeof console !== "undefined" && console.debug) console.debug("[margiqo:event]", event);
 
   if (ANALYTICS_ENDPOINT) {
     fetch(ANALYTICS_ENDPOINT, {

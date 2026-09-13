@@ -38,5 +38,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`ProfitDoctor prototype running at http://localhost:${PORT}`);
+  console.log(`Margiqo prototype running at http://localhost:${PORT}`);
 });

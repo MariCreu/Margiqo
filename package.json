@@ -1,9 +1,9 @@
 {
-  "name": "profitdoctor",
+  "name": "margiqo",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "ProfitDoctor Phase 1 prototype — Margin Leak Doctor (discount leakage + low/negative product margin) from Shopify orders.csv + products.csv, entirely client-side.",
+  "description": "Margiqo — Margin Leak Scanner (discount leakage + low/negative product margin) from Shopify orders.csv + products.csv, entirely client-side.",
   "scripts": {
     "test": "node --test",
     "start": "node server.js",

@@ -1,6 +1,6 @@
 import { money } from "./format.js";
 
-const APP_NAME = "ProfitDoctor";
+const APP_NAME = "Margiqo";
 
 /**
  * A plain-text summary a merchant can paste into Slack/email — deliberately

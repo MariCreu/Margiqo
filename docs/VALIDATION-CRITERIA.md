@@ -1,7 +1,7 @@
 # Validation criteria
 
 The question this phase exists to answer: **after discovering margin leaks
-with their own data, does a merchant want ProfitDoctor to monitor their
+with their own data, does a merchant want Margiqo to monitor their
 store automatically?** Not "can we build a Shopify App" — that's already
 known to be possible.
 

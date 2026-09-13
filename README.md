@@ -1,10 +1,12 @@
-# ProfitDoctor (provisional name)
+# Margiqo
 
 > "Your store is leaking money. We'll find where."
 
 Self-service profit-leak diagnostic for ecommerce stores. Independent
 project — no code, branding, models, or infrastructure shared with any
-other product.
+other product. Formerly developed under the working name "ProfitDoctor";
+that name has been fully retired in favor of the definitive name **Margiqo**
+(domain: margiqo.com).
 
 ## Phase 1: Margin Leak Doctor
 
@@ -147,13 +149,13 @@ scoped to a pre-approved list per session. This is a local git repo only.
 ### To publish it, from your own machine or GitHub UI:
 
 ```bash
-# 1. Create an empty repo named "profitdoctor" on GitHub (no README/license,
+# 1. Create an empty repo named "margiqo" on GitHub (no README/license,
 #    so it doesn't conflict with this history), then:
-git remote add origin https://github.com/<your-github-username>/profitdoctor.git
+git remote add origin https://github.com/<your-github-username>/margiqo.git
 git push -u origin main
 ```
 
 If you'd rather have Claude push it in a future session, grant that session
-access to a `profitdoctor` repo you create yourself first (Claude can push
+access to a `margiqo` repo you create yourself first (Claude can push
 to a repo it's been given access to, but cannot create the repo itself in
 this environment).

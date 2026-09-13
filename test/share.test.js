@@ -23,7 +23,7 @@ test("share summary marks demo scans distinctly", () => {
   const ordersCsv = [ORDER_HEADER, "#1,EUR,,1,Widget,W-1,10,0"].join("\n");
   const report = diagnose({ ordersCsvText: ordersCsv, productsCsvText: null });
   const summary = buildShareSummary(report, { isDemo: true });
-  assert.ok(summary.startsWith("ProfitDoctor Margin Scan (demo data)"));
+  assert.ok(summary.startsWith("Margiqo Margin Scan (demo data)"));
 });
 
 test("share summary never claims a known figure for an UNKNOWN-margin leak", () => {

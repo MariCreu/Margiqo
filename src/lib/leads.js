@@ -1,6 +1,6 @@
 import { EARLY_ACCESS_FORM_ENDPOINT } from "../config.js";
 
-const LOCAL_STORAGE_KEY = "profitdoctor_local_leads";
+const LOCAL_STORAGE_KEY = "margiqo_local_leads";
 
 // Only these fields can ever leave this module. Anything else on the
 // payload passed in — a stray SKU, a revenue figure, the CSV itself — is
@@ -36,7 +36,7 @@ export async function submitEarlyAccess(rawPayload) {
   const payload = sanitize(rawPayload);
 
   if (!EARLY_ACCESS_FORM_ENDPOINT) {
-    console.info("[profitdoctor] early-access endpoint not configured — captured locally", payload);
+    console.info("[margiqo] early-access endpoint not configured — captured locally", payload);
     saveLocally(payload);
     return { ok: true, mode: "local" };
   }
@@ -50,7 +50,7 @@ export async function submitEarlyAccess(rawPayload) {
     if (!res.ok) throw new Error(`status ${res.status}`);
     return { ok: true, mode: "remote" };
   } catch (err) {
-    console.warn("[profitdoctor] early-access submission failed, falling back to local capture", err);
+    console.warn("[margiqo] early-access submission failed, falling back to local capture", err);
     saveLocally(payload);
     return { ok: true, mode: "local-fallback" };
   }
