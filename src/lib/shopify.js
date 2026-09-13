@@ -11,12 +11,40 @@ const PRODUCT_SKU_COL = "Variant SKU";
 const PRODUCT_COST_COL = "Cost per item";
 const PRODUCT_TITLE_COL = "Title";
 
+// Handles plain numbers, currency-symbol prefixes, accounting-style
+// parenthesized negatives, and both thousands-separator conventions
+// (1,234.56 and 1.234,56) — the reasonable variety a merchant's export or
+// a re-save through Excel might introduce. Anything else returns null
+// (UNKNOWN) rather than guess.
 function toNumberOrNull(raw) {
   if (raw === undefined || raw === null) return null;
-  const trimmed = String(raw).trim();
-  if (trimmed === "") return null;
-  const n = Number(trimmed);
-  return Number.isFinite(n) ? n : null;
+  let s = String(raw).trim();
+  if (s === "") return null;
+  s = s.replace(/[€$£]/g, "").trim();
+
+  let negative = false;
+  const paren = s.match(/^\((.*)\)$/);
+  if (paren) {
+    negative = true;
+    s = paren[1].trim();
+  }
+
+  if (!/^-?[\d.,]+$/.test(s)) return null;
+
+  let normalized = s;
+  const lastComma = s.lastIndexOf(",");
+  const lastDot = s.lastIndexOf(".");
+  if (lastComma > -1 && lastDot > -1) {
+    normalized = lastComma > lastDot ? s.replace(/\./g, "").replace(",", ".") : s.replace(/,/g, "");
+  } else if (lastComma > -1) {
+    const digitsAfterComma = s.length - lastComma - 1;
+    const commaCount = (s.match(/,/g) || []).length;
+    normalized = commaCount === 1 && digitsAfterComma === 2 ? s.replace(",", ".") : s.replace(/,/g, "");
+  }
+
+  const n = Number(normalized);
+  if (!Number.isFinite(n)) return null;
+  return negative ? -n : n;
 }
 
 /**
@@ -27,6 +55,15 @@ function toNumberOrNull(raw) {
  * Discount Amount, Currency, ...) — continuation rows leave them blank.
  * We forward-fill those from the order's first row.
  */
+// A file that's missing the order columns but clearly has a Products
+// export shape — lets the UI say "wrong field" instead of "bad file".
+export function looksLikeProductsFile(headers) {
+  return headers.includes(PRODUCT_SKU_COL) && !ORDER_REQUIRED.every((c) => headers.includes(c));
+}
+export function looksLikeOrdersFile(headers) {
+  return headers.includes("Lineitem sku") && !headers.includes(PRODUCT_SKU_COL);
+}
+
 export function parseOrdersCsv(text) {
   const { headers, records } = parseCsv(text);
 
@@ -40,6 +77,8 @@ export function parseOrdersCsv(text) {
     meta: {
       columns: headers,
       missingRequired,
+      isEmpty: headers.length === 0,
+      looksLikeProductsFile: missingRequired.length > 0 && looksLikeProductsFile(headers),
       hasDiscountData,
       hasDiscountCodeData,
       ordersCount: 0,
@@ -114,6 +153,8 @@ export function parseProductsCsv(text) {
       columns: headers,
       hasSkuColumn,
       hasCostColumn,
+      isEmpty: headers.length === 0,
+      looksLikeOrdersFile: !hasSkuColumn && looksLikeOrdersFile(headers),
       rowsTotal: 0,
       rowsWithSku: 0,
       rowsWithCost: 0,

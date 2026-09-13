@@ -1,8 +1,11 @@
 import { parseOrdersCsv, parseProductsCsv } from "./lib/shopify.js";
 import { diagnose } from "./lib/diagnose.js";
 import { money, pct } from "./lib/format.js";
+import { buildShareSummary } from "./lib/share.js";
+import { submitEarlyAccess } from "./lib/leads.js";
+import { track } from "./lib/analytics.js";
 
-const state = { ordersText: null, productsText: null, ordersValid: false };
+const state = { ordersText: null, productsText: null, ordersValid: false, lastReport: null, isDemo: false };
 
 function showScreen(id) {
   document.querySelectorAll("[data-screen]").forEach((el) => {
@@ -39,9 +42,15 @@ async function onOrdersFile(e) {
   state.ordersText = await readFileAsText(file);
   const { meta } = parseOrdersCsv(state.ordersText);
 
-  if (meta.missingRequired.length > 0) {
+  if (meta.isEmpty) {
     state.ordersValid = false;
-    setStatus(statusEl, `Missing required column(s): ${meta.missingRequired.join(", ")}`, "error");
+    setStatus(statusEl, "This file looks empty — export orders again from Shopify Admin → Orders → Export.", "error");
+  } else if (meta.looksLikeProductsFile) {
+    state.ordersValid = false;
+    setStatus(statusEl, "This looks like a Products export — upload it in the Products field instead.", "error");
+  } else if (meta.missingRequired.length > 0) {
+    state.ordersValid = false;
+    setStatus(statusEl, `Missing required column(s): ${meta.missingRequired.join(", ")}. Make sure this is an unmodified Shopify orders export.`, "error");
   } else {
     state.ordersValid = true;
     const parts = [`${meta.lineItemsCount} order lines across ${meta.ordersCount} orders detected`];
@@ -59,6 +68,16 @@ async function onProductsFile(e) {
   state.productsText = await readFileAsText(file);
   const { meta } = parseProductsCsv(state.productsText);
 
+  if (meta.isEmpty) {
+    setStatus(statusEl, "This file looks empty — margin analysis will stay UNKNOWN.", "warn");
+    state.productsText = null;
+    return;
+  }
+  if (meta.looksLikeOrdersFile) {
+    setStatus(statusEl, "This looks like an Orders export — upload it in the Orders field instead.", "error");
+    state.productsText = null;
+    return;
+  }
   if (!meta.hasSkuColumn) {
     setStatus(statusEl, "Could not find a 'Variant SKU' column — margin analysis will stay UNKNOWN", "warn");
     state.productsText = null;
@@ -140,18 +159,84 @@ function renderLeakCard(card, currency) {
   node.querySelector(".leak-todo").textContent = card.whatToDo;
   node.querySelector(".leak-calc ol").innerHTML = card.calculation.map((line) => `<li>${line}</li>`).join("");
 
+  const details = node.querySelector(".leak-calc");
+  let opened = false;
+  details.addEventListener("toggle", () => {
+    if (details.open && !opened) {
+      opened = true;
+      track("leak_detail_opened", { severity: card.severity });
+    }
+  });
+
   return node;
 }
 
-function renderResults(report) {
+function refererHostname() {
+  try {
+    return document.referrer ? new URL(document.referrer).hostname : null;
+  } catch {
+    return null;
+  }
+}
+
+function wireEarlyAccess(report, isDemo) {
+  const form = document.getElementById("form-early-access");
+  const success = document.getElementById("early-access-success");
+  const willingnessBlock = document.getElementById("willingness-question");
+  const willingnessThanks = document.getElementById("willingness-thanks");
+
+  form.hidden = false;
+  success.hidden = true;
+  willingnessThanks.hidden = true;
+  willingnessBlock.querySelectorAll(".btn-choice").forEach((b) => (b.disabled = false));
+
+  const context = {
+    source: refererHostname(),
+    usedDemo: isDemo,
+    leaksCount: report.headline.leaksCount,
+    marginUnlocked: report.meta.marginAnalysisAvailable,
+  };
+
+  track("early_access_viewed", { is_demo: isDemo, leaks_count: report.headline.leaksCount, margin_unlocked: report.meta.marginAnalysisAvailable });
+
+  let submittedEmail = null;
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("input-email").value.trim();
+    if (!email) return;
+    submittedEmail = email;
+    await submitEarlyAccess({ email, ...context });
+    track("early_access_submitted", { is_demo: isDemo, leaks_count: report.headline.leaksCount, margin_unlocked: report.meta.marginAnalysisAvailable });
+    form.hidden = true;
+    success.hidden = false;
+  };
+
+  willingnessBlock.querySelectorAll(".btn-choice").forEach((btn) => {
+    btn.onclick = async () => {
+      willingnessBlock.querySelectorAll(".btn-choice").forEach((b) => (b.disabled = true));
+      await submitEarlyAccess({ email: submittedEmail, ...context, willingnessToPay: btn.dataset.value });
+      willingnessThanks.hidden = false;
+    };
+  });
+}
+
+function renderResults(report, isDemo) {
   if (!report.ok) {
-    alert(`Could not run the scan: missing required columns (${report.missingRequired.join(", ")}).`);
+    const errorEl = document.getElementById("upload-error");
+    errorEl.hidden = false;
+    errorEl.textContent = `Could not run the scan: missing required column(s) (${report.missingRequired.join(", ")}). Make sure this is an unmodified Shopify orders export.`;
     return;
   }
 
-  document.getElementById("headline-count").textContent = `${report.headline.leaksCount} margin leak${report.headline.leaksCount === 1 ? "" : "s"} detected`;
+  state.lastReport = report;
+  state.isDemo = isDemo;
+
+  document.getElementById("demo-banner").hidden = !isDemo;
+
+  document.getElementById("headline-count").textContent = `${report.headline.leaksCount} potential margin leak${report.headline.leaksCount === 1 ? "" : "s"} detected`;
   document.getElementById("headline-amount").textContent =
-    report.headline.knownMarginAtRisk > 0 ? `${money(report.headline.knownMarginAtRisk, report.currency)} in known margin at risk` : "No known margin at risk found";
+    report.headline.knownMarginAtRisk > 0 ? `${money(report.headline.knownMarginAtRisk, report.currency)} known product margin at risk` : "No known margin at risk found";
 
   const cta = document.getElementById("cogs-cta");
   cta.hidden = report.meta.marginAnalysisAvailable;
@@ -173,19 +258,53 @@ function renderResults(report) {
     for (const card of report.leaks) cardsEl.appendChild(renderLeakCard(card, report.currency));
   }
 
+  wireEarlyAccess(report, isDemo);
+
+  track("scan_completed", { is_demo: isDemo, leaks_count: report.headline.leaksCount, margin_unlocked: report.meta.marginAnalysisAvailable });
+
   showScreen("screen-results");
 }
 
+async function runDemoScan() {
+  track("demo_started");
+  const [ordersRes, productsRes] = await Promise.all([fetch("demo-data/orders.csv"), fetch("demo-data/products.csv")]);
+  const ordersCsvText = await ordersRes.text();
+  const productsCsvText = await productsRes.text();
+  const report = diagnose({ ordersCsvText, productsCsvText });
+  renderResults(report, true);
+}
+
+function copySummary() {
+  if (!state.lastReport) return;
+  const text = buildShareSummary(state.lastReport, { isDemo: state.isDemo });
+  const btn = document.getElementById("btn-copy-summary");
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      const original = btn.textContent;
+      btn.textContent = "Copied!";
+      setTimeout(() => (btn.textContent = original), 1500);
+    })
+    .catch(() => {
+      btn.textContent = "Could not copy";
+    });
+}
+
 function wire() {
+  track("landing_viewed");
+
   document.getElementById("btn-start").addEventListener("click", () => showScreen("screen-upload"));
+  document.getElementById("btn-try-demo").addEventListener("click", runDemoScan);
   document.getElementById("btn-back-landing").addEventListener("click", () => showScreen("screen-landing"));
   document.getElementById("btn-add-products").addEventListener("click", () => showScreen("screen-upload"));
   document.getElementById("file-orders").addEventListener("change", onOrdersFile);
   document.getElementById("file-products").addEventListener("change", onProductsFile);
+  document.getElementById("btn-copy-summary").addEventListener("click", copySummary);
 
   document.getElementById("btn-scan").addEventListener("click", () => {
+    track("real_scan_started");
     const report = diagnose({ ordersCsvText: state.ordersText, productsCsvText: state.productsText });
-    renderResults(report);
+    renderResults(report, false);
   });
 
   document.getElementById("btn-restart").addEventListener("click", () => {

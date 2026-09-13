@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseOrdersCsv, parseProductsCsv, attachCost } from "../src/lib/shopify.js";
+import { parseOrdersCsv, parseProductsCsv, attachCost, looksLikeProductsFile, looksLikeOrdersFile } from "../src/lib/shopify.js";
 
 const ORDER_HEADER = "Name,Email,Financial Status,Currency,Discount Code,Discount Amount,Lineitem quantity,Lineitem name,Lineitem sku,Lineitem price,Lineitem discount";
 
@@ -75,4 +75,50 @@ test("treats an explicit cost of 0 as known, not missing", () => {
   const csv = "Variant SKU,Cost per item\nFREE-1,0\n";
   const { costBySku } = parseProductsCsv(csv);
   assert.equal(costBySku.get("FREE-1"), 0);
+});
+
+test("parses numbers with a currency symbol, thousands separators, and European decimal commas", () => {
+  const csv = [ORDER_HEADER, "#1,x@x.com,paid,EUR,,,1,Widget,W-1,\"€1,234.50\",0"].join("\n");
+  const { lineItems: a } = parseOrdersCsv(csv);
+  assert.equal(a[0].unitPrice, 1234.5);
+
+  const csvEuro = [ORDER_HEADER, "#1,x@x.com,paid,EUR,,,1,Widget,W-1,\"1.234,50\",0"].join("\n");
+  const { lineItems: b } = parseOrdersCsv(csvEuro);
+  assert.equal(b[0].unitPrice, 1234.5);
+
+  const csvComma = [ORDER_HEADER, "#1,x@x.com,paid,EUR,,,1,Widget,W-1,\"12,50\",0"].join("\n");
+  const { lineItems: c } = parseOrdersCsv(csvComma);
+  assert.equal(c[0].unitPrice, 12.5);
+});
+
+test("does not guess at a value that isn't a recognizable number", () => {
+  const csv = [ORDER_HEADER, "#1,x@x.com,paid,EUR,,,1,Widget,W-1,not-a-price,0"].join("\n");
+  const { lineItems } = parseOrdersCsv(csv);
+  assert.equal(lineItems.length, 0, "a line with an unparseable price is dropped, not guessed at");
+});
+
+test("recognizes an empty file distinctly from a wrong-shaped one", () => {
+  const { meta } = parseOrdersCsv("");
+  assert.equal(meta.isEmpty, true);
+});
+
+test("detects a products.csv uploaded into the orders slot", () => {
+  const csv = "Variant SKU,Title,Cost per item\nW-1,Widget,4\n";
+  const { meta } = parseOrdersCsv(csv);
+  assert.equal(meta.looksLikeProductsFile, true);
+});
+
+test("detects an orders.csv uploaded into the products slot", () => {
+  const csv = [ORDER_HEADER, "#1,x@x.com,paid,EUR,,,1,Widget,W-1,10,0"].join("\n");
+  const { meta } = parseProductsCsv(csv);
+  assert.equal(meta.looksLikeOrdersFile, true);
+});
+
+test("looksLikeProductsFile / looksLikeOrdersFile helpers are mutually exclusive on real headers", () => {
+  const orderHeaders = ORDER_HEADER.split(",");
+  const productHeaders = ["Variant SKU", "Title", "Cost per item"];
+  assert.equal(looksLikeProductsFile(orderHeaders), false);
+  assert.equal(looksLikeOrdersFile(productHeaders), false);
+  assert.equal(looksLikeProductsFile(productHeaders), true);
+  assert.equal(looksLikeOrdersFile(orderHeaders), true);
 });

@@ -43,3 +43,13 @@ test("skips blank lines", () => {
   const { records } = parseCsv("a,b\n1,2\n\n3,4\n");
   assert.equal(records.length, 2);
 });
+
+test("handles a quoted field containing a literal newline", () => {
+  const { records } = parseCsv('name,note\nWidget,"line one\nline two"\n');
+  assert.equal(records[0].note, "line one\nline two");
+});
+
+test("handles columns in any order (header-driven, not positional)", () => {
+  const { records } = parseCsv("c,a,b\n3,1,2\n");
+  assert.deepEqual(records, [{ a: "1", b: "2", c: "3" }]);
+});

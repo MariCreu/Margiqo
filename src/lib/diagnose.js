@@ -122,8 +122,9 @@ export function diagnose({ ordersCsvText, productsCsvText }) {
   if (orders.meta.missingRequired.length > 0) {
     return {
       ok: false,
-      error: "orders_missing_columns",
+      error: orders.meta.isEmpty ? "orders_empty" : "orders_missing_columns",
       missingRequired: orders.meta.missingRequired,
+      looksLikeProductsFile: orders.meta.looksLikeProductsFile,
     };
   }
 

@@ -67,8 +67,20 @@ h3 { font-size: 1rem; margin: 0 0 8px; }
 .btn-small { padding: 6px 12px; font-size: 0.85rem; margin-left: 12px; }
 
 .hero { padding: 24px 0 40px; border-bottom: 1px solid var(--border); }
+.lede-facts { font-weight: 600; margin-top: -8px; }
+.cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+@media (max-width: 480px) { .cta-row { flex-direction: column; } .cta-row .btn { width: 100%; text-align: center; } }
+.btn-secondary { background: var(--panel); border: 1px solid var(--ink); color: var(--ink); }
 .reassurance { margin: 20px 0 0; padding-left: 20px; color: var(--muted); font-size: 0.9rem; }
 .reassurance li { margin-bottom: 4px; }
+
+.privacy-block { margin-top: 32px; padding: 20px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+.privacy-block h2 { margin-top: 0; }
+.privacy-block ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); font-size: 0.9rem; }
+.privacy-block li { margin-bottom: 4px; }
+
+.disclaimer { color: var(--muted); font-size: 0.78rem; margin-top: 24px; }
+.howto { color: var(--muted); font-size: 0.8rem; margin: 0 0 8px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 
 .what-it-checks { padding-top: 32px; }
 .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -95,9 +107,21 @@ h3 { font-size: 1rem; margin: 0 0 8px; }
 .banner-error { background: var(--critical-bg); color: var(--critical); }
 .banner-info { background: var(--info-bg); color: var(--info); display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 
-.results-header { padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.demo-banner {
+  background: repeating-linear-gradient(45deg, #6c4fd6, #6c4fd6 10px, #7c5ff0 10px, #7c5ff0 20px);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.results-header { padding-bottom: 16px; border-bottom: 1px solid var(--border); position: relative; }
 .headline-count { font-size: 1.15rem; font-weight: 600; }
 .headline-amount { font-size: 2.4rem; font-weight: 700; color: var(--critical); margin-top: 4px; }
+#btn-copy-summary { margin-top: 12px; }
 
 .kpi-row { display: flex; gap: 24px; flex-wrap: wrap; margin: 12px 0 20px; }
 .kpi { min-width: 140px; }
@@ -151,3 +175,20 @@ h3 { font-size: 1rem; margin: 0 0 8px; }
 .leak-calc { margin-top: 10px; font-size: 0.85rem; }
 .leak-calc summary { cursor: pointer; color: var(--accent); }
 .leak-calc ol { color: var(--muted); }
+
+.early-access {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  margin-top: 32px;
+}
+.early-access h2 { margin-top: 0; }
+.early-access p { color: var(--muted); max-width: 560px; }
+#form-early-access { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+#input-email { flex: 1; min-width: 220px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; }
+.willingness-question { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.willingness-options { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.btn-choice { background: var(--panel); border: 1px solid var(--border); color: var(--ink); font-size: 0.85rem; padding: 8px 14px; }
+.btn-choice:hover:not(:disabled) { border-color: var(--ink); }
+.willingness-thanks { color: var(--accent); font-size: 0.9rem; margin-top: 10px; }

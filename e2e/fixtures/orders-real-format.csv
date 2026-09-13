@@ -1,0 +1,5 @@
+Id,Email,Financial Status,Fulfillment Status,Lineitem sku,Lineitem name,Lineitem quantity,Lineitem price,Name,Vendor,Tags,Currency,Discount Code,Lineitem discount,Notes,Risk Level,Source,Payment Method,Refunded Amount
+5551001,shopper1@example.com,paid,fulfilled,GIFT-BOX-01,"Gift Box, Wrapped",2,45.00,#9001,Aurora Home & Living,vip,EUR,WELCOME10,9.00,,low,web,shopify_payments,
+5551002,shopper2@example.com,paid,fulfilled,CANDLE-LAV,Lavender Candle,3,24.00,#9002,Aurora Home & Living,,EUR,,0,,low,web,shopify_payments,
+,,,,MUG-CERAMIC,Ceramic Mug,1,18.00,,,,,,0,,,,,
+5551003,shopper3@example.com,paid,unfulfilled,TOTE-CANVAS,Canvas Tote Bag,4,16.00,#9003,Aurora Home & Living,,EUR,,0,"Leave at door",low,web,shopify_payments,
