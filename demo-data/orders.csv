@@ -1,0 +1,71 @@
+Name,Email,Financial Status,Currency,Discount Code,Discount Amount,Created at,Lineitem quantity,Lineitem name,Lineitem sku,Lineitem price,Lineitem discount,Payment Method
+#2001,customer@example.com,paid,EUR,SUMMER20,82.5,2026-08-20 10:00:00 -0400,6,Summer Bundle Pack,SUMMER-PACK,68.75,82.5,shopify_payments
+#2002,customer@example.com,paid,EUR,SUMMER20,68.75,2026-08-20 10:00:00 -0400,5,Summer Bundle Pack,SUMMER-PACK,68.75,68.75,shopify_payments
+#2003,customer@example.com,paid,EUR,SUMMER20,55,2026-08-20 10:00:00 -0400,4,Summer Bundle Pack,SUMMER-PACK,68.75,55,shopify_payments
+#2004,customer@example.com,paid,EUR,SUMMER20,82.5,2026-08-20 10:00:00 -0400,6,Summer Bundle Pack,SUMMER-PACK,68.75,82.5,shopify_payments
+#2005,customer@example.com,paid,EUR,SUMMER20,82.5,2026-08-20 10:00:00 -0400,6,Summer Bundle Pack,SUMMER-PACK,68.75,82.5,shopify_payments
+#2006,customer@example.com,paid,EUR,CLEAROUT50,120,2026-08-20 10:00:00 -0400,8,Reed Diffuser,DIFFUSER-REED,30,120,shopify_payments
+#2007,customer@example.com,paid,EUR,CLEAROUT50,105,2026-08-20 10:00:00 -0400,7,Reed Diffuser,DIFFUSER-REED,30,105,shopify_payments
+#2008,customer@example.com,paid,EUR,CLEAROUT50,75,2026-08-20 10:00:00 -0400,5,Reed Diffuser,DIFFUSER-REED,30,75,shopify_payments
+#2009,customer@example.com,paid,EUR,VASEFLASH35,61.6,2026-08-20 10:00:00 -0400,8,Ceramic Vase,VASE-CERAMIC,22,61.6,shopify_payments
+#2010,customer@example.com,paid,EUR,VASEFLASH35,53.9,2026-08-20 10:00:00 -0400,7,Ceramic Vase,VASE-CERAMIC,22,53.9,shopify_payments
+#2011,customer@example.com,paid,EUR,VIP15,33,2026-08-20 10:00:00 -0400,10,Ceramic Vase,VASE-CERAMIC,22,33,shopify_payments
+#2012,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,5,Ceramic Vase,VASE-CERAMIC,22,0,shopify_payments
+#2013,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,5,Ceramic Vase,VASE-CERAMIC,22,0,shopify_payments
+#2014,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,5,Ceramic Vase,VASE-CERAMIC,22,0,shopify_payments
+#2015,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,5,Ceramic Vase,VASE-CERAMIC,22,0,shopify_payments
+#2016,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,5,Ceramic Vase,VASE-CERAMIC,22,0,shopify_payments
+#2017,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,5,Ceramic Vase,VASE-CERAMIC,22,0,shopify_payments
+#2018,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,5,Ceramic Vase,VASE-CERAMIC,22,0,shopify_payments
+#2019,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,5,Ceramic Vase,VASE-CERAMIC,22,0,shopify_payments
+#2020,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Knit Throw Blanket,THROW-BLANKET,45,0,shopify_payments
+#2021,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Knit Throw Blanket,THROW-BLANKET,45,0,shopify_payments
+#2022,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Knit Throw Blanket,THROW-BLANKET,45,0,shopify_payments
+#2023,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Knit Throw Blanket,THROW-BLANKET,45,0,shopify_payments
+#2024,customer@example.com,paid,EUR,VIP15,36,2026-08-20 10:00:00 -0400,10,Lavender Candle,CANDLE-LAV,24,36,shopify_payments
+#2025,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,8,Lavender Candle,CANDLE-LAV,24,0,shopify_payments
+#2026,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,8,Lavender Candle,CANDLE-LAV,24,0,shopify_payments
+#2027,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,8,Lavender Candle,CANDLE-LAV,24,0,shopify_payments
+#2028,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,8,Lavender Candle,CANDLE-LAV,24,0,shopify_payments
+#2029,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,8,Lavender Candle,CANDLE-LAV,24,0,shopify_payments
+#2030,customer@example.com,paid,EUR,VIP15,36,2026-08-20 10:00:00 -0400,10,Vanilla Candle,CANDLE-VAN,24,36,shopify_payments
+#2031,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,8,Vanilla Candle,CANDLE-VAN,24,0,shopify_payments
+#2032,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,8,Vanilla Candle,CANDLE-VAN,24,0,shopify_payments
+#2033,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,8,Vanilla Candle,CANDLE-VAN,24,0,shopify_payments
+#2034,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,8,Vanilla Candle,CANDLE-VAN,24,0,shopify_payments
+#2035,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,8,Vanilla Candle,CANDLE-VAN,24,0,shopify_payments
+#2036,customer@example.com,paid,EUR,VIP15,27,2026-08-20 10:00:00 -0400,10,Ceramic Mug,MUG-CERAMIC,18,27,shopify_payments
+#2037,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Ceramic Mug,MUG-CERAMIC,18,0,shopify_payments
+#2038,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Ceramic Mug,MUG-CERAMIC,18,0,shopify_payments
+#2039,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Ceramic Mug,MUG-CERAMIC,18,0,shopify_payments
+#2040,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Ceramic Mug,MUG-CERAMIC,18,0,shopify_payments
+#2041,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Ceramic Mug,MUG-CERAMIC,18,0,shopify_payments
+#2042,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Ceramic Mug,MUG-CERAMIC,18,0,shopify_payments
+#2043,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Canvas Tote Bag,TOTE-CANVAS,16,0,shopify_payments
+#2044,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Canvas Tote Bag,TOTE-CANVAS,16,0,shopify_payments
+#2045,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Canvas Tote Bag,TOTE-CANVAS,16,0,shopify_payments
+#2046,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Canvas Tote Bag,TOTE-CANVAS,16,0,shopify_payments
+#2047,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Canvas Tote Bag,TOTE-CANVAS,16,0,shopify_payments
+#2048,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Canvas Tote Bag,TOTE-CANVAS,16,0,shopify_payments
+#2049,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Canvas Tote Bag,TOTE-CANVAS,16,0,shopify_payments
+#2050,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Canvas Tote Bag,TOTE-CANVAS,16,0,shopify_payments
+#2051,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Kraft Notebook,NOTEBOOK-KRAFT,9,0,shopify_payments
+#2052,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Kraft Notebook,NOTEBOOK-KRAFT,9,0,shopify_payments
+#2053,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Kraft Notebook,NOTEBOOK-KRAFT,9,0,shopify_payments
+#2054,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Kraft Notebook,NOTEBOOK-KRAFT,9,0,shopify_payments
+#2055,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Kraft Notebook,NOTEBOOK-KRAFT,9,0,shopify_payments
+#2056,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Kraft Notebook,NOTEBOOK-KRAFT,9,0,shopify_payments
+#2057,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Kraft Notebook,NOTEBOOK-KRAFT,9,0,shopify_payments
+#2058,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Kraft Notebook,NOTEBOOK-KRAFT,9,0,shopify_payments
+#2059,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Kraft Notebook,NOTEBOOK-KRAFT,9,0,shopify_payments
+#2060,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,10,Kraft Notebook,NOTEBOOK-KRAFT,9,0,shopify_payments
+#2061,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,20,Handmade Soap Bar,SOAP-BAR,7,0,shopify_payments
+#2062,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,20,Handmade Soap Bar,SOAP-BAR,7,0,shopify_payments
+#2063,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,20,Handmade Soap Bar,SOAP-BAR,7,0,shopify_payments
+#2064,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,20,Handmade Soap Bar,SOAP-BAR,7,0,shopify_payments
+#2065,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,20,Handmade Soap Bar,SOAP-BAR,7,0,shopify_payments
+#2066,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,20,Handmade Soap Bar,SOAP-BAR,7,0,shopify_payments
+#2067,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,1,Lavender Candle,CANDLE-LAV,24,0,shopify_payments
+#2068,customer@example.com,paid,EUR,,,2026-08-20 10:00:00 -0400,2,Ceramic Mug,MUG-CERAMIC,18,0,shopify_payments
+#2069,customer@example.com,paid,EUR,,,2026-08-21 09:15:00 -0400,2,Lavender Candle,CANDLE-LAV,24,0,shopify_payments
+,,,,,,,3,Ceramic Mug,MUG-CERAMIC,18,0,

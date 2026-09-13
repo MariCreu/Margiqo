@@ -1,21 +1,93 @@
 # ProfitDoctor (provisional name)
 
-Self-service profit-leak diagnostic for ecommerce stores. Independent project — no code, branding, models or infrastructure shared with any other product.
-
 > "Your store is leaking money. We'll find where."
+
+Self-service profit-leak diagnostic for ecommerce stores. Independent
+project — no code, branding, models, or infrastructure shared with any
+other product.
+
+## Phase 1: Margin Leak Doctor
+
+A single-page, **entirely client-side** tool. A merchant uploads their own
+Shopify `orders.csv` (+ optionally `products.csv`), and gets a diagnosis in
+the browser — nothing is ever sent to a server.
+
+```
+landing → upload orders.csv (+ products.csv) → validation → scan → diagnosis
+```
+
+It runs two detectors, chosen over the original Returns Doctor hypothesis
+after researching what Shopify's exports actually contain — see
+[`docs/DETECTOR-COMPARISON.md`](docs/DETECTOR-COMPARISON.md):
+
+1. **Discount Leakage** — which discount codes/products absorb
+   disproportionate discount, backed by evidence (concentration + rate),
+   never flagged for size alone.
+2. **Low / Negative Product Margin** — sales priced below product cost
+   after discount, and thin-margin products at real volume. Only runs for
+   SKUs with known cost data; never estimates a missing cost.
+
+### The one rule that matters more than any feature
+
+**"Known product margin" is never called "profit."** It's
+`revenue after discount − product cost`, nothing else. Payment fees,
+advertising, fulfillment, actual shipping cost, and returns are not
+included — every card says so explicitly, and every € figure expands into
+the exact formula and inputs behind it ("How is this calculated?"). See
+[`docs/FORMULAS.md`](docs/FORMULAS.md).
+
+### KNOWN / ESTIMATED / UNKNOWN
+
+Preference order: **KNOWN > ESTIMATED > UNKNOWN**. Phase 1 deliberately has
+no ESTIMATED values — everything is either computed directly from the data
+you provided (KNOWN) or explicitly missing (UNKNOWN, with a CTA to fix it).
+Nothing is ever defaulted or guessed: no invented COGS, shipping cost,
+payment fee, or ad spend. ESTIMATED is reserved for a future phase with a
+defensible, disclosed estimation method.
+
+## Running it
+
+```bash
+npm start          # serves the app at http://localhost:4173
+npm test           # unit tests (node:test) for every detector + parser
+npm run e2e        # drives a real Chromium browser through the full flow
+```
+
+No build step, no dependencies to install for the app itself. The E2E
+script uses the `playwright` package pre-installed globally in this
+environment (symlinked into `node_modules/`); on another machine, run
+`npm i -D playwright && npx playwright install chromium` first.
+
+Try it with the demo dataset in `demo-data/` — see
+[`docs/DEMO-SCENARIO.md`](docs/DEMO-SCENARIO.md) for what it contains and
+what the scan should find.
+
+## Docs
+
+- [`docs/DATA-AVAILABILITY.md`](docs/DATA-AVAILABILITY.md) — what Shopify's
+  native exports actually contain (researched, not assumed)
+- [`docs/DETECTOR-COMPARISON.md`](docs/DETECTOR-COMPARISON.md) — why this
+  detector pair replaced the original Returns Doctor hypothesis
+- [`docs/FORMULAS.md`](docs/FORMULAS.md) — every formula and threshold,
+  with a worked example
+- [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md) — what this deliberately
+  does not do yet
+- [`docs/DEMO-SCENARIO.md`](docs/DEMO-SCENARIO.md) — the demo dataset and
+  expected scan result
+
+## Explicitly not in Phase 1
+
+Shopify OAuth, Shopify App, billing, user accounts, any database, Returns
+Doctor, Shipping Doctor, Ads Doctor, external APIs, LLM-generated
+recommendations. Recommendations are deterministic rules (e.g. *"discount
+code causes negative known margin for SKU → exclude SKU from that
+promotion"*). See `docs/LIMITATIONS.md` for the full list.
 
 ## Status
 
-Phase 0 (product/data validation) in progress. No app code yet — see the
-conversation history / project notes for the Shopify data-availability
-research and detector comparison that gates what gets built in Phase 1.
-
-Phase 1 target (not started until the first detector is confirmed):
-a single-page, client-side-only tool — **upload → validation → scan →
-diagnosis** — that reads a merchant's own Shopify CSV export(s) in the
-browser and produces a diagnosis with every € figure traceable to its
-inputs, explicitly labeled KNOWN / ESTIMATED / UNKNOWN. No OAuth, no
-Shopify App, no backend, no accounts, no billing.
+Phase 1 built and validated against a demo dataset (unit tests + a real
+browser E2E run — see `e2e/screenshots/`). **Not yet validated against a
+real store's export.** That's the next step before any decision on Phase 2.
 
 ## Why this repo is not yet connected to GitHub
 
