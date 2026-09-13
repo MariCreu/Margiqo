@@ -46,7 +46,7 @@ tested against real merchant data.
   project; the account hit its 2-project free-tier limit on existing,
   unrelated projects, and creating a third wasn't done without the user's
   say-so (see the conversation record). Early access + analytics fall back
-  to per-browser `localStorage` capture until `src/config.js` points at a
+  to per-browser `localStorage` capture until `public/src/config.js` points at a
   real endpoint. This means **no cross-visitor lead/analytics aggregation
   exists yet** — see docs/PRIVACY.md and docs/DEPLOYMENT.md for exactly
   what's blocked and how to unblock it (free up a Supabase slot, or wire

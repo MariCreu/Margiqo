@@ -84,7 +84,7 @@ script uses the `playwright` package pre-installed globally in this
 environment (symlinked into `node_modules/`); on another machine, run
 `npm i -D playwright && npx playwright install chromium` first.
 
-Try it with the demo dataset in `demo-data/` — see
+Try it with the demo dataset in `public/demo-data/` — see
 [`docs/DEMO-SCENARIO.md`](docs/DEMO-SCENARIO.md) for what it contains and
 what the scan should find — or click "Try with demo data" on the landing
 page itself once it's running.

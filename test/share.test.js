@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { diagnose } from "../src/lib/diagnose.js";
-import { buildShareSummary } from "../src/lib/share.js";
+import { diagnose } from "../public/src/lib/diagnose.js";
+import { buildShareSummary } from "../public/src/lib/share.js";
 
 const ORDER_HEADER = "Name,Currency,Discount Code,Lineitem quantity,Lineitem name,Lineitem sku,Lineitem price,Lineitem discount";
 const PRODUCT_HEADER = "Variant SKU,Title,Cost per item";

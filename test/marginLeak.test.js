@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { analyzeMargin, THRESHOLDS } from "../src/lib/marginLeak.js";
-import { attachCost } from "../src/lib/shopify.js";
+import { analyzeMargin, THRESHOLDS } from "../public/src/lib/marginLeak.js";
+import { attachCost } from "../public/src/lib/shopify.js";
 
 function rawLi({ sku, code, price, qty, discount }) {
   return {

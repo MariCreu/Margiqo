@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { sanitize, ALLOWED_FIELDS } from "../src/lib/leads.js";
+import { sanitize, ALLOWED_FIELDS } from "../public/src/lib/leads.js";
 
 test("sanitize keeps only the allowed lead fields", () => {
   const clean = sanitize({ email: "a@x.com", source: "google.com", usedDemo: false, leaksCount: 3, marginUnlocked: true });

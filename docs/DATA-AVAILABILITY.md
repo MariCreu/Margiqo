@@ -18,7 +18,7 @@ decided the Phase 1 detector choice — see DETECTOR-COMPARISON.md.
 | `Taxes` (+ up to 5 `Tax N Name`/`Tax N Value` pairs) | AVAILABLE | Aggregate, not reliably per line item |
 | `Refunded Amount` | AVAILABLE | **Order-level only** — does not say which line item, SKU, or quantity was refunded |
 | `Payment Method`, `Payment ID` | AVAILABLE | Identifies the method, not its cost |
-| A quirk that matters for parsing: on a multi-line order, only the **first** row carries order-level fields (Discount Code, Discount Amount, Currency, dates, ...); continuation rows leave them blank. `src/lib/shopify.js` forward-fills these. | — | Confirmed against real export samples |
+| A quirk that matters for parsing: on a multi-line order, only the **first** row carries order-level fields (Discount Code, Discount Amount, Currency, dates, ...); continuation rows leave them blank. `public/src/lib/shopify.js` forward-fills these. | — | Confirmed against real export samples |
 
 ## Products export (`products.csv`, native, separate file)
 

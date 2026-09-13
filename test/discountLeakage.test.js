@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { analyzeDiscounts, THRESHOLDS } from "../src/lib/discountLeakage.js";
+import { analyzeDiscounts, THRESHOLDS } from "../public/src/lib/discountLeakage.js";
 
 function li({ sku, code, price, qty, discount }) {
   return {

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { track, getEventBuffer, clearEventBuffer } from "../src/lib/analytics.js";
+import { track, getEventBuffer, clearEventBuffer } from "../public/src/lib/analytics.js";
 
 test("track records only the event name, timestamp, and allowed scalar props", () => {
   clearEventBuffer();

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { diagnose, NOT_INCLUDED } from "../src/lib/diagnose.js";
+import { diagnose, NOT_INCLUDED } from "../public/src/lib/diagnose.js";
 
 const ORDER_HEADER = "Name,Currency,Discount Code,Lineitem quantity,Lineitem name,Lineitem sku,Lineitem price,Lineitem discount";
 const PRODUCT_HEADER = "Variant SKU,Title,Cost per item";

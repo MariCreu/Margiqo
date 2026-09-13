@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseOrdersCsv, parseProductsCsv, attachCost, looksLikeProductsFile, looksLikeOrdersFile } from "../src/lib/shopify.js";
+import { parseOrdersCsv, parseProductsCsv, attachCost, looksLikeProductsFile, looksLikeOrdersFile } from "../public/src/lib/shopify.js";
 
 const ORDER_HEADER = "Name,Email,Financial Status,Currency,Discount Code,Discount Amount,Lineitem quantity,Lineitem name,Lineitem sku,Lineitem price,Lineitem discount";
 

@@ -2,7 +2,7 @@
 
 Every number Margin Leak Doctor shows is computed by one of the formulas
 below, straight from `orders.csv` (+ optionally `products.csv`). Nothing is
-estimated, inferred, or defaulted. Source: `src/lib/*.js`.
+estimated, inferred, or defaulted. Source: `public/src/lib/*.js`.
 
 ## Terms
 
@@ -30,7 +30,7 @@ and returns — none of which Shopify's standard exports expose per line item
 (see DATA-AVAILABILITY.md). Every card that shows a known-margin figure
 lists this exclusion explicitly.
 
-## Detector 1 — Discount Leakage (`src/lib/discountLeakage.js`)
+## Detector 1 — Discount Leakage (`public/src/lib/discountLeakage.js`)
 
 Aggregates line items by `Discount Code` and by `sku`:
 
@@ -56,7 +56,7 @@ following hold (see `THRESHOLDS` in the source for exact values):
 A large discount that is spread evenly across the catalog (concentration
 ratio ≈ 1) is **not** flagged — size alone is never treated as evidence.
 
-## Detector 2 — Low / Negative Product Margin (`src/lib/marginLeak.js`)
+## Detector 2 — Low / Negative Product Margin (`public/src/lib/marginLeak.js`)
 
 Only runs when at least one line item has a known cost. Groups line items by
 `(sku, discountCode)` and by `sku` alone:

@@ -7,9 +7,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
-import { diagnose } from "../src/lib/diagnose.js";
+import { diagnose } from "../public/src/lib/diagnose.js";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const publicDir = path.join(projectRoot, "public");
 const PORT = 4321;
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".csv": "text/csv; charset=utf-8" };
 
@@ -17,7 +18,7 @@ function startServer() {
   const server = createServer((req, res) => {
     let urlPath = decodeURIComponent(req.url.split("?")[0]);
     if (urlPath === "/") urlPath = "/index.html";
-    const filePath = path.join(projectRoot, urlPath);
+    const filePath = path.join(publicDir, urlPath);
     fs.readFile(filePath, (err, data) => {
       if (err) {
         res.writeHead(404);
@@ -34,7 +35,7 @@ function startServer() {
 const shotsDir = path.join(projectRoot, "e2e", "screenshots");
 fs.mkdirSync(shotsDir, { recursive: true });
 const fixturesDir = path.join(projectRoot, "e2e", "fixtures");
-const demoDir = path.join(projectRoot, "demo-data");
+const demoDir = path.join(publicDir, "demo-data");
 
 async function flowA_demoToEarlyAccess(browser) {
   console.log("Flow A: landing -> Try demo -> scan -> diagnosis -> open leak -> early access CTA");

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = path.dirname(fileURLToPath(import.meta.url));
+const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "public");
 const PORT = process.env.PORT || 4173;
 
 const MIME = {

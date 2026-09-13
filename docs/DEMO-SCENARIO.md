@@ -1,7 +1,7 @@
 # Demo dataset
 
-`demo-data/orders.csv` + `demo-data/products.csv`, generated deterministically
-by `demo-data/generate.js` (`node demo-data/generate.js` regenerates them —
+`public/demo-data/orders.csv` + `public/demo-data/products.csv`, generated deterministically
+by `public/demo-data/generate.js` (`node public/demo-data/generate.js` regenerates them —
 they are also committed so the scan works without a build step).
 
 A fictional store, "Aurora Home & Living" (candles, mugs, throws, decor),
