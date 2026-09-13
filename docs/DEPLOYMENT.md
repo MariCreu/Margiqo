@@ -4,19 +4,23 @@ The whole app is static files — `index.html`, `styles.css`, `src/`,
 `robots.txt`, `sitemap.xml`, plus `demo-data/*.csv` for the "Try with demo
 data" flow. No build step, no server-side code, no database.
 
-Target domain: **margiqo.com** (purchased; DNS/registrar access was not
-available in this session — see "Connecting margiqo.com" below).
+Target domain: **margiqo.com** (purchased on Cloudflare — DNS is already
+there, which is why Cloudflare Pages is the natural host: attaching the
+custom domain needs zero manual DNS records).
+
+Source: [github.com/MariCreu/Margiqo](https://github.com/MariCreu/Margiqo).
 
 ## Any static host works. Cheapest options:
 
-### Cloudflare Pages (recommended — free, no card required)
+### Cloudflare Pages (recommended — free, no card required, chosen for this project)
 - **Build command:** none
 - **Output directory:** `/` (repo root)
 - **Env vars:** none required
-- Steps: connect the GitHub repo → framework preset "None" → deploy →
-  add `margiqo.com` as a custom domain in the Pages project settings.
-  Cloudflare will show the DNS records to add if the domain isn't already
-  on Cloudflare DNS.
+- Steps: Workers & Pages → Create → Pages → **Connect to Git** → authorize
+  GitHub → select the `Margiqo` repo → framework preset "None" → Save and
+  Deploy → then Pages project → **Custom domains** → **Add domain** →
+  `margiqo.com` (auto-configures since the domain is already on Cloudflare
+  DNS).
 
 ### Netlify
 - **Build command:** none

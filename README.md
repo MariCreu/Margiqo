@@ -140,22 +140,9 @@ exactly what to configure to unblock this.
 **Not yet validated against a real merchant.** That's the next step —
 see `docs/VALIDATION-CRITERIA.md` — not Shopify OAuth, not Phase 2.
 
-## Why this repo is not yet connected to GitHub
+## Repository / deployment status
 
-This session's GitHub access could not create a new repository under this
-account (`403 Resource not accessible by integration`) — repo creation is
-scoped to a pre-approved list per session. This is a local git repo only.
-
-### To publish it, from your own machine or GitHub UI:
-
-```bash
-# 1. Create an empty repo named "margiqo" on GitHub (no README/license,
-#    so it doesn't conflict with this history), then:
-git remote add origin https://github.com/<your-github-username>/margiqo.git
-git push -u origin main
-```
-
-If you'd rather have Claude push it in a future session, grant that session
-access to a `margiqo` repo you create yourself first (Claude can push
-to a repo it's been given access to, but cannot create the repo itself in
-this environment).
+Source lives at [github.com/MariCreu/Margiqo](https://github.com/MariCreu/Margiqo).
+The static site is deployed via Cloudflare Pages, connected to this repo —
+see `docs/DEPLOYMENT.md` for how the build is configured and how the
+`margiqo.com` custom domain is attached.
