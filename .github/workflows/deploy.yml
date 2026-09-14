@@ -1,0 +1,76 @@
+name: Test and deploy
+
+# Replaces the manual `npx wrangler deploy`. The Cloudflare↔GitHub build
+# integration was never actually connected — a push to main left the live site
+# untouched — so the deploy is driven from here instead, where it can be gated
+# on the test suite rather than running unconditionally.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # A newer push supersedes an in-flight deploy; never let two deploys race.
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Unit and browser tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Detectors, CSV parser, lead/analytics allowlists, and the Worker's
+      # server-side validation.
+      - name: Unit tests
+        run: npm test
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      # Drives a real browser through the demo scan, a reordered real-format
+      # CSV, the missing-COGS path, invalid-CSV recovery and a 390px viewport.
+      - name: End-to-end flows
+        run: npm run e2e
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-screenshots
+          path: e2e/screenshots/
+          retention-days: 14
+
+  deploy:
+    name: Deploy to Cloudflare
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
