@@ -2,6 +2,10 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "margiqo",
   "compatibility_date": "2026-09-11",
+  // The site is served from its custom domain (margiqo.com). Leaving the
+  // *.workers.dev subdomain live too would publish a second, fully crawlable
+  // copy of every page — duplicate content pointing at the same canonical.
+  "workers_dev": false,
   "assets": {
     "directory": "public"
   }

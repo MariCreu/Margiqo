@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Margiqo">
+  <!-- The wordmark's mark reduced until it survives 16px, which is the size
+       that actually decides a favicon: one bar holding its height, one falling
+       away below it. The break-even rule is dropped on purpose — at tab size a
+       1px line just muddies both bars, and the full mark still carries it in
+       the page header, where there is room to read it. -->
+  <rect width="32" height="32" rx="6" fill="#092321"/>
+  <rect x="6" y="5" width="8" height="13" fill="#e8efec"/>
+  <rect x="18" y="14" width="8" height="13" fill="#ff8f78"/>
+</svg>

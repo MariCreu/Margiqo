@@ -186,10 +186,21 @@ see `docs/VALIDATION-CRITERIA.md` — not Shopify OAuth, not Phase 2.
 ## Repository / deployment status
 
 Source lives at [github.com/MariCreu/Margiqo](https://github.com/MariCreu/Margiqo).
-Cloudflare builds the repo with `npx wrangler deploy` and serves `public/`
-as static assets (`wrangler.jsonc` → `assets.directory`), so what ships is
-a Worker rather than a Pages site.
+**Live at [margiqo.com](https://margiqo.com).** The site is a Worker serving
+`public/` as static assets (`wrangler.jsonc` → `assets.directory`), not a
+Pages site, and `workers_dev` is off so the `*.workers.dev` subdomain does
+not publish a second crawlable copy.
 
-**Live at `margiqo.maricreu86.workers.dev`. The `margiqo.com` custom domain
-is not attached yet** — that step is written up in `docs/DEPLOYMENT.md` and
-is still pending.
+**Deploys are manual — pushing to `main` does not ship anything.** The
+Cloudflare↔GitHub integration described in `docs/DEPLOYMENT.md` is not
+connected: a push to `main` was observed leaving the live site untouched for
+10 minutes, with new asset paths still 404ing. Until that is wired up:
+
+```bash
+npx wrangler deploy      # uploads public/ and publishes
+```
+
+`public/_headers` carries the security headers and the immutable cache policy
+for `/fonts/*`; Cloudflare reads it at deploy time. Note that its
+`connect-src` is deliberately left open to `https:` so that setting
+`EARLY_ACCESS_FORM_ENDPOINT` later does not get silently blocked by CSP.

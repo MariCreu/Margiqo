@@ -1,0 +1,23 @@
+# Cloudflare Workers static assets reads this file at deploy time.
+# Rules are matched most-specific-first, so the /fonts/* block wins for fonts.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
+  # Everything the page needs is same-origin: no CDN, no analytics vendor, no
+  # embed (see docs/PRIVACY.md). connect-src stays open to HTTPS because
+  # EARLY_ACCESS_FORM_ENDPOINT / ANALYTICS_ENDPOINT in public/src/config.js are
+  # meant to be pointed at a third-party form or REST endpoint later — locking
+  # it to 'self' now would silently break that the day it gets wired up.
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'
+
+# The font filenames carry their subset and axis, and their bytes never change
+# under the same name — new bytes would mean a new face and a new name.
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# index.html, styles.css and src/*.js change on every deploy and are served
+# under stable names, so they keep Cloudflare's revalidate-on-every-request
+# default rather than getting a long max-age they'd have to bust.
