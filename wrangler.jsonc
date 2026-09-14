@@ -6,7 +6,20 @@
   // *.workers.dev subdomain live too would publish a second, fully crawlable
   // copy of every page — duplicate content pointing at the same canonical.
   "workers_dev": false,
+  "main": "src/worker.js",
   "assets": {
-    "directory": "public"
-  }
+    "directory": "public",
+    // Lets src/worker.js fall through to env.ASSETS.fetch(request) for every
+    // path except /api/early-access.
+    "binding": "ASSETS"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "EARLY_ACCESS_KV",
+      // Placeholder — run `npx wrangler kv namespace create EARLY_ACCESS_KV`
+      // once and replace this with the printed id before deploying. See
+      // docs/DEPLOYMENT.md.
+      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+    }
+  ]
 }

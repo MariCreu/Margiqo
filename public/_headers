@@ -7,10 +7,12 @@
   X-Frame-Options: DENY
   Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()
   # Everything the page needs is same-origin: no CDN, no analytics vendor, no
-  # embed (see docs/PRIVACY.md). connect-src stays open to HTTPS because
-  # EARLY_ACCESS_FORM_ENDPOINT / ANALYTICS_ENDPOINT in public/src/config.js are
-  # meant to be pointed at a third-party form or REST endpoint later — locking
-  # it to 'self' now would silently break that the day it gets wired up.
+  # embed (see docs/PRIVACY.md). EARLY_ACCESS_FORM_ENDPOINT now points at the
+  # same-origin /api/early-access (src/worker.js), so connect-src could be
+  # 'self' for that alone — it stays open to HTTPS only because
+  # ANALYTICS_ENDPOINT in public/src/config.js is still meant to be pointed at
+  # a third-party endpoint later; locking to 'self' now would silently break
+  # that the day it gets wired up.
   Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'
 
 # The font filenames carry their subset and axis, and their bytes never change

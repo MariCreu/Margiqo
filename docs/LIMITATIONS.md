@@ -6,8 +6,9 @@ overclaiming.
 ## Scope
 
 - **Not implemented at all:** Shopify OAuth/App, billing, user accounts,
-  any database, Returns Doctor, Shipping Doctor, Ads Doctor, any external
-  API, any LLM. This is a static, client-side, single-session tool.
+  Returns Doctor, Shipping Doctor, Ads Doctor, any external API, any LLM.
+  This is a static, client-side, single-session tool for everything except
+  early-access capture — see the KV note below.
 - **Only two detectors:** Discount Leakage and Low/Negative Product Margin.
   Every other cost (payment fees, advertising, fulfillment, actual shipping
   cost, returns) is out of scope and explicitly listed as "Not included" on
@@ -42,15 +43,18 @@ tested against real merchant data.
 
 ## Phase 1.5 additions
 
-- **No backend is actually live yet.** The plan was a dedicated Supabase
-  project; the account hit its 2-project free-tier limit on existing,
-  unrelated projects, and creating a third wasn't done without the user's
-  say-so (see the conversation record). Early access + analytics fall back
-  to per-browser `localStorage` capture until `public/src/config.js` points at a
-  real endpoint. This means **no cross-visitor lead/analytics aggregation
-  exists yet** — see docs/PRIVACY.md and docs/DEPLOYMENT.md for exactly
-  what's blocked and how to unblock it (free up a Supabase slot, or wire
-  Formspree + any events sink).
+- **Early access has a minimal backend now; analytics still doesn't.** The
+  plan was a dedicated Supabase project; the account hit its 2-project
+  free-tier limit on existing, unrelated projects (see the conversation
+  record). Instead, `POST /api/early-access` is handled by a same-origin
+  Cloudflare Worker (`src/worker.js`) that writes only the allowlisted
+  fields from `src/lib/earlyAccess.js` to a Cloudflare KV namespace —
+  one record per email, so the willingness-to-pay follow-up now merges into
+  the same record instead of creating a duplicate. This is not a general
+  database: it never touches CSV/order data, and nothing else in the app
+  reads or writes it. `ANALYTICS_ENDPOINT` is still unset, so funnel events
+  keep falling back to per-browser `localStorage`/console capture — see
+  docs/PRIVACY.md and docs/DEPLOYMENT.md for exactly what's blocked there.
 - **File encoding.** `FileReader.readAsText()` assumes UTF-8. A CSV saved
   in a legacy Windows-1252/Latin-1 encoding (older Excel exports, mainly
   on Windows) may show mojibake in accented product names. Not detected or
@@ -60,11 +64,13 @@ tested against real merchant data.
   copies are counted. Not handled, because a legitimate duplicate line
   (split shipment, same SKU/qty/price twice) is indistinguishable from an
   accidental one without guessing.
-- **The willingness-to-pay follow-up is a second, separately-sent record**
-  (same email, added `willingnessToPay` field), not an update to the first
-  — there's no database to update in place. Fine for reading manually or
-  in a spreadsheet import; would need a real backend with an upsert to
-  merge cleanly.
+- ~~**The willingness-to-pay follow-up is a second, separately-sent
+  record**~~ — fixed once `EARLY_ACCESS_KV` is wired up (see above):
+  `src/worker.js` keys each lead by email and merges new fields into the
+  existing record, so the willingness-to-pay follow-up updates the same
+  entry instead of duplicating it. Still true for anyone still running on
+  the `localStorage` fallback (no endpoint configured, or the fetch
+  failed) — those really are separate, unmerged entries.
 - **The real domain (margiqo.com) isn't connected to a live deployment
   yet.** SEO scaffolding (canonical/OpenGraph tags, `robots.txt`,
   `sitemap.xml`) already points at `https://margiqo.com/`, but no DNS

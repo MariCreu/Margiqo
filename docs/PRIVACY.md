@@ -55,13 +55,40 @@ landing page promising that nothing leaves the browser. Same reasoning as
 rejecting an analytics vendor above, applied to the kind of dependency
 that is easy not to notice.
 
+## Early-access leads: same-origin, not a third party
+
+`EARLY_ACCESS_FORM_ENDPOINT` (`public/src/config.js`) points at
+`/api/early-access` — same origin, handled by `src/worker.js`, the Worker
+that also serves the static site. No request ever leaves margiqo.com for
+this.
+
+The worker re-validates and re-sanitizes on the server, independently of
+`leads.js`'s client-side `sanitize()`: `src/lib/earlyAccess.js` rebuilds
+the payload from the same fixed allowlist (`email`, `source`, `usedDemo`,
+`leaksCount`, `marginUnlocked`, `willingnessToPay`) and rejects anything
+that doesn't pass basic shape/type checks (valid email, `willingnessToPay`
+restricted to the five button values in `index.html`, sizes and counts
+bounded). A client-side bug or a hand-crafted request can't get an
+unexpected field into storage — the server enforces the same allowlist the
+client does, from scratch.
+
+Storage is a single Cloudflare KV namespace (`EARLY_ACCESS_KV`), scoped to
+exactly these lead records — nothing else in the app reads or writes it,
+and it never receives CSV/order data (the worker's only route is
+`/api/early-access`; every other request falls straight through to the
+static assets). Reading the leads back requires `GET /api/early-access`
+with the `ADMIN_TOKEN` secret as a bearer token — see docs/DEPLOYMENT.md.
+
+The endpoint has basic abuse resistance (a request-size cap and a per-IP
+rate limit, both in `src/worker.js`) but no CAPTCHA/Turnstile yet. Revisit
+if spam shows up in the KV data — Cloudflare Turnstile is free and same
+Cloudflare account, so it's a small addition when it's actually needed.
+
 ## Known gap: no cross-visitor analytics aggregation yet
 
-Without `ANALYTICS_ENDPOINT`/`EARLY_ACCESS_FORM_ENDPOINT` configured (see
-docs/DEPLOYMENT.md), funnel events and leads are captured per-browser only
-— there is currently no way to see, across real visitors, how many people
-reached each funnel step. This is a direct consequence of the Supabase
-project-limit blocker recorded in the Phase 1.5 report; it is not a
-privacy feature, it's unfinished plumbing, and it's the first thing to
-wire up before running this with real merchants at any scale beyond
-manual spot-checks.
+Without `ANALYTICS_ENDPOINT` configured (see docs/DEPLOYMENT.md), funnel
+events are still captured per-browser only — there is currently no way to
+see, across real visitors, how many people reached each funnel step. Leads
+no longer have this gap (see above); analytics does, and it's the next
+thing to wire up before running this with real merchants at any scale
+beyond manual spot-checks.
