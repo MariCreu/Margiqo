@@ -1,4 +1,4 @@
-import { sanitizeLead, validateLead, leadKey, rateLimitKey } from "./lib/earlyAccess.js";
+import { sanitizeLead, validateLead, leadKey, rateLimitKey, timingSafeEqual } from "./lib/earlyAccess.js";
 
 const MAX_BODY_BYTES = 8192;
 const RATE_LIMIT_MAX = 20; // per IP, per window — generous for ~20-30 expected real scans
@@ -25,6 +25,11 @@ export async function handleEarlyAccessPost(request, env) {
     return json({ ok: false, error: "rate limited" }, 429);
   }
 
+  // Spend the slot before parsing: a request that turns out to be malformed
+  // still consumed our work, and only counting valid ones let a bot post junk
+  // forever without ever tripping the limit.
+  await env.EARLY_ACCESS_KV.put(rlKey, String(count + 1), { expirationTtl: RATE_LIMIT_WINDOW_SECONDS });
+
   let body;
   try {
     body = await request.json();
@@ -38,8 +43,6 @@ export async function handleEarlyAccessPost(request, env) {
     return json({ ok: false, error }, 400);
   }
 
-  await env.EARLY_ACCESS_KV.put(rlKey, String(count + 1), { expirationTtl: RATE_LIMIT_WINDOW_SECONDS });
-
   const key = leadKey(clean.email);
   const existing = await env.EARLY_ACCESS_KV.get(key, { type: "json" });
   const now = new Date().toISOString();
@@ -52,7 +55,7 @@ export async function handleEarlyAccessPost(request, env) {
 export async function handleEarlyAccessGet(request, env) {
   const auth = request.headers.get("authorization") || "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!env.ADMIN_TOKEN || token !== env.ADMIN_TOKEN) {
+  if (!env.ADMIN_TOKEN || !timingSafeEqual(token, env.ADMIN_TOKEN)) {
     return json({ ok: false, error: "unauthorized" }, 401);
   }
 

@@ -73,19 +73,25 @@ Both are one-time setup, from the repo root, with `wrangler` authenticated
 against the Cloudflare account that owns margiqo.com (`npx wrangler login`
 if not already):
 
-```bash
-# 1. Create the KV namespace (only needs doing once, ever).
-npx wrangler kv namespace create EARLY_ACCESS_KV
-# Prints an id — paste it into wrangler.jsonc's kv_namespaces[0].id,
-# replacing the REPLACE_WITH_KV_NAMESPACE_ID placeholder.
+**The KV namespace already exists** — it was created once against the
+account that owns margiqo.com, and its id is committed in `wrangler.jsonc`:
 
-# 2. Set the token that guards GET /api/early-access (reading leads back).
-# Pick any long random string — it's never shown to visitors.
-npx wrangler secret put ADMIN_TOKEN
-
-# 3. Deploy.
-npx wrangler deploy
 ```
+EARLY_ACCESS_KV = c56041dcc5e64fa0b252a92618e512fb
+```
+
+Nothing to do there. Only the secret is still per-account setup, and it is
+the one thing that cannot live in the repo:
+
+```bash
+# Guards GET /api/early-access (reading leads back). Any long random string;
+# it is never shown to a visitor and never sent to the browser.
+npx wrangler secret put ADMIN_TOKEN
+```
+
+Deploys then happen automatically from `.github/workflows/deploy.yml` on a
+push to `main`, after the unit and E2E suites pass. `npx wrangler deploy`
+still works for a manual release.
 
 To read leads back afterwards:
 

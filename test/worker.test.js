@@ -102,3 +102,49 @@ test("everything except /api/early-access falls through to ASSETS", async () => 
   const res = await worker.fetch(new Request("https://margiqo.com/index.html"), env);
   assert.equal(await res.text(), "static page");
 });
+
+test("a malformed body still spends a rate-limit slot", async () => {
+  // Regression: the counter used to be bumped only after validation passed, so
+  // junk payloads were free and a bot could post them forever without ever
+  // tripping the limit.
+  const env = { EARLY_ACCESS_KV: createMockKV() };
+  const bad = new Request("https://margiqo.com/api/early-access", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: "{ not json",
+  });
+  const res = await handleEarlyAccessPost(bad, env);
+  assert.equal(res.status, 400);
+
+  const counters = [...env.EARLY_ACCESS_KV.store.entries()].filter(([k]) => k.startsWith("rl:"));
+  assert.equal(counters.length, 1, "the rejected request should have consumed a slot");
+  assert.equal(counters[0][1], "1");
+});
+
+test("a rejected payload still counts toward the rate limit", async () => {
+  const env = { EARLY_ACCESS_KV: createMockKV() };
+  for (let i = 0; i < 20; i++) {
+    assert.equal((await handleEarlyAccessPost(postRequest({ email: "nope" }), env)).status, 400);
+  }
+  // The window is now spent, so even a perfectly valid signup is turned away.
+  const res = await handleEarlyAccessPost(postRequest({ email: "real@shop.com" }), env);
+  assert.equal(res.status, 429);
+});
+
+test("timingSafeEqual accepts only an exact match", async () => {
+  const { timingSafeEqual } = await import("../src/lib/earlyAccess.js");
+  assert.equal(timingSafeEqual("s3cret", "s3cret"), true);
+  assert.equal(timingSafeEqual("s3cret", "s3creT"), false);
+  assert.equal(timingSafeEqual("s3cret", "s3cre"), false, "a prefix must not pass");
+  assert.equal(timingSafeEqual("", ""), true);
+  assert.equal(timingSafeEqual("s3cret", undefined), false);
+  assert.equal(timingSafeEqual(null, "s3cret"), false);
+});
+
+test("GET rejects a token that shares a prefix with the real one", async () => {
+  const env = { EARLY_ACCESS_KV: createMockKV(), ADMIN_TOKEN: "abcdef123456" };
+  const req = new Request("https://margiqo.com/api/early-access", {
+    headers: { authorization: "Bearer abcdef123455" },
+  });
+  assert.equal((await handleEarlyAccessGet(req, env)).status, 401);
+});

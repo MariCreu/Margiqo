@@ -48,6 +48,16 @@ export function leadKey(email) {
   return `lead:${email.trim().toLowerCase()}`;
 }
 
+// Compares in time independent of how many leading characters match, so the
+// admin token cannot be recovered one character at a time by timing responses.
+// Length is allowed to leak; the token's contents are not.
+export function timingSafeEqual(a, b) {
+  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
 export function rateLimitKey(ip, windowStartSeconds) {
   return `rl:${ip}:${windowStartSeconds}`;
 }
