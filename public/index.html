@@ -7,6 +7,7 @@
   <title>Margiqo — Free Shopify Margin Leak Scanner</title>
   <meta name="description" content="Upload your Shopify orders and product cost exports and find out which discounts and products are quietly destroying your margin. Free scan, no account, runs entirely in your browser." />
   <link rel="canonical" href="https://margiqo.com/" />
+  <meta name="theme-color" content="#092321" />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Margiqo — Free Shopify Margin Leak Scanner" />
@@ -29,90 +30,167 @@
   }
   </script>
 
+  <link rel="preload" href="fonts/IBMPlexSans-var-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="wordmark">Margiqo <span class="tag">prototype</span></div>
+  <header class="topbar band">
+    <div class="wrap topbar-inner">
+      <span class="wordmark">
+        <svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect class="mark-bar" x="2" y="4" width="4.5" height="9" />
+          <rect class="mark-bar" x="9.75" y="7" width="4.5" height="6" />
+          <rect class="mark-bar mark-bar-leak" x="17.5" y="13" width="4.5" height="7" />
+          <line x1="0" y1="13" x2="24" y2="13" />
+        </svg>
+        Margiqo
+      </span>
+      <span class="tag">prototype</span>
+    </div>
   </header>
 
   <main id="app">
     <!-- LANDING -->
     <section id="screen-landing" class="screen" data-screen>
-      <div class="hero">
-        <h1>Find the sales that are costing you money.</h1>
-        <p class="lede">
-          Upload your Shopify exports and discover products and discounts that may be destroying your product margin.
-        </p>
-        <p class="lede-facts">Free scan. No account required. Your data stays in your browser.</p>
-        <div class="cta-row">
-          <button id="btn-start" class="btn btn-primary btn-lg">Scan my store</button>
-          <button id="btn-try-demo" class="btn btn-secondary btn-lg">Try with demo data</button>
+      <div class="hero band">
+        <div class="wrap hero-inner">
+          <div class="hero-copy">
+            <h1>Find the sales that are costing you money.</h1>
+            <p class="lede">
+              Your Shopify export already lists every discounted sale. It just never subtracts
+              what the product cost you — so the orders losing money look exactly like the ones making it.
+            </p>
+            <div class="cta-row">
+              <button id="btn-start" class="btn btn-primary btn-lg" data-go-upload>Scan my store</button>
+              <button id="btn-try-demo" class="btn btn-secondary btn-lg">See a sample scan</button>
+            </div>
+          </div>
+
+          <figure class="ledger" aria-label="Example finding from the sample store">
+            <div class="ledger-row">
+              <span class="ledger-label">Revenue after discount</span>
+              <span class="ledger-value">€1,485</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Product cost</span>
+              <span class="ledger-value">€1,566</span>
+            </div>
+            <div class="ledger-row ledger-row-total">
+              <span class="ledger-label">Margin</span>
+              <span class="ledger-value">−€81</span>
+            </div>
+            <figcaption>
+              27 units of one product, all sold under the code SUMMER20. Both numbers were
+              already in the sample store's exports.
+            </figcaption>
+          </figure>
         </div>
-        <ul class="reassurance">
-          <li>Files are processed locally — nothing is uploaded to any server</li>
-          <li>No account, no login, no credit card</li>
-          <li>Every figure shows exactly how it was calculated</li>
+      </div>
+
+      <div class="facts-strip">
+        <ul class="facts wrap">
+          <li><b>Nothing is uploaded.</b> Your files are read and analysed in this browser tab.</li>
+          <li><b>No account, no card.</b> Close the tab and every file you picked is gone.</li>
+          <li><b>Every figure is auditable.</b> Each result opens up to show its own arithmetic.</li>
         </ul>
       </div>
 
-      <div class="what-it-checks">
-        <h2>What this scan checks</h2>
-        <div class="check-grid">
-          <div class="check-card">
+      <div class="wrap section">
+        <h2>What the scan checks</h2>
+        <div class="checks">
+          <div class="check">
             <h3>Discount leakage</h3>
-            <p>Which discount codes and products absorb disproportionate discount — with real evidence, not just "big numbers".</p>
+            <p>Which discount codes and products absorb a disproportionate share of everything you gave away — measured against the revenue they actually brought in.</p>
+            <p class="check-needs">Needs the orders export</p>
           </div>
-          <div class="check-card">
-            <h3>Low &amp; negative product margin</h3>
-            <p>Sales priced below product cost after discount, and thin-margin products at risky volume — when you provide product costs.</p>
+          <div class="check">
+            <h3>Low and negative product margin</h3>
+            <p>Units sold below what they cost you once the discount landed, plus thin-margin products moving at enough volume to matter.</p>
+            <p class="check-needs">Needs the orders export and product costs</p>
           </div>
         </div>
-        <p class="scope-note">
-          This prototype does not yet analyze returns, shipping cost, payment fees or ad spend — every result
-          says exactly what's not included.
+        <p class="footnote">
+          Returns, shipping cost, payment fees and ad spend are not analysed yet. Every result
+          states which of these it leaves out, so no figure pretends to be a full P&amp;L.
         </p>
       </div>
 
-      <div class="privacy-block">
-        <h2>Your store data never leaves your browser</h2>
-        <ul>
-          <li>Files are read and processed locally, in JavaScript running on your machine</li>
-          <li>No customer data, order contents, or files are ever uploaded anywhere</li>
-          <li>No account or login — nothing about your store is stored by us</li>
-          <li>Close or refresh the page and everything you uploaded is gone</li>
-        </ul>
+      <div class="wrap section">
+        <div class="closing">
+          <div class="closing-copy">
+            <h2>A scan shows you last month. The damage is happening this week.</h2>
+            <p>
+              A CSV tells you which discounts hurt you once the money has already gone out.
+              What you actually want is to know the day a product tips below cost, while the
+              promotion is still running.
+            </p>
+            <p class="closing-turn">This scan is how you find out whether you need that.</p>
+            <button class="btn btn-primary btn-lg" data-go-upload>Scan my store</button>
+          </div>
+          <dl class="roadmap">
+            <div class="roadmap-row">
+              <dt>Now</dt>
+              <dd>You export two CSVs and Margiqo shows you what the past months already cost you. Free, and it stays that way.</dd>
+            </div>
+            <div class="roadmap-row">
+              <dt>Next</dt>
+              <dd>Margiqo watches the store itself and tells you the day a product, code or promotion starts selling below cost.</dd>
+            </div>
+          </dl>
+        </div>
       </div>
 
-      <p class="disclaimer">Margiqo is an independent tool and is not affiliated with, endorsed by, or sponsored by Shopify.</p>
+      <div class="wrap section">
+        <div class="privacy">
+          <h2>Your store data never leaves your browser</h2>
+          <ul>
+            <li>Files are read and processed locally, by JavaScript running on your machine</li>
+            <li>No customer data, order contents or files are sent anywhere</li>
+            <li>No account or login — we store nothing about your store</li>
+            <li>Refresh the page and everything you uploaded is gone</li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <!-- UPLOAD -->
     <section id="screen-upload" class="screen" data-screen hidden>
-      <h1>Upload your exports</h1>
-      <p class="lede">Two files from your Shopify admin. Products is optional but recommended.</p>
+      <div class="wrap section">
+        <h1 class="page-title">Upload your exports</h1>
+        <p class="lede lede-paper">Two files from your Shopify admin. The second one is optional, but it is what turns "this discount looks big" into "this sale lost you money".</p>
 
-      <div class="upload-grid">
-        <div class="upload-card">
-          <h3>1. Orders export <span class="req">required</span></h3>
-          <p class="howto">Shopify Admin → Orders → Export</p>
-          <input type="file" id="file-orders" accept=".csv,text/csv" />
-          <div id="orders-status" class="file-status" aria-live="polite"></div>
+        <ol class="upload-grid">
+          <li class="upload-card">
+            <div class="upload-head">
+              <span class="step">1</span>
+              <div>
+                <h3>Orders export <span class="req">required</span></h3>
+                <p class="howto">Shopify admin → Orders → Export</p>
+              </div>
+            </div>
+            <input type="file" id="file-orders" accept=".csv,text/csv" />
+            <div id="orders-status" class="file-status" aria-live="polite"></div>
+          </li>
+          <li class="upload-card">
+            <div class="upload-head">
+              <span class="step">2</span>
+              <div>
+                <h3>Products export <span class="opt">recommended</span></h3>
+                <p class="howto">Shopify admin → Products → Export</p>
+              </div>
+            </div>
+            <input type="file" id="file-products" accept=".csv,text/csv" />
+            <div id="products-status" class="file-status" aria-live="polite"></div>
+            <p class="hint">Without it we can still find discount leaks, but every margin figure stays marked unknown.</p>
+          </li>
+        </ol>
+
+        <div id="upload-error" class="banner banner-error" hidden></div>
+
+        <div class="actions">
+          <button id="btn-scan" class="btn btn-primary btn-lg" disabled>Run scan</button>
+          <button id="btn-back-landing" class="btn btn-ghost">Back</button>
         </div>
-        <div class="upload-card">
-          <h3>2. Products export <span class="opt">recommended</span></h3>
-          <p class="howto">Shopify Admin → Products → Export</p>
-          <input type="file" id="file-products" accept=".csv,text/csv" />
-          <div id="products-status" class="file-status" aria-live="polite"></div>
-          <p class="hint">Without this, we can still find discount leaks — but margin analysis will be marked UNKNOWN.</p>
-        </div>
-      </div>
-
-      <div id="upload-error" class="banner banner-error" hidden></div>
-
-      <div class="actions">
-        <button id="btn-back-landing" class="btn btn-ghost">Back</button>
-        <button id="btn-scan" class="btn btn-primary btn-lg" disabled>Run scan</button>
       </div>
     </section>
 
@@ -120,75 +198,99 @@
     <section id="screen-results" class="screen" data-screen hidden>
       <div id="demo-banner" class="demo-banner" hidden>DEMO STORE — Sample data, not your store</div>
 
-      <div class="results-header">
-        <h1>MARGIN SCAN</h1>
-        <div id="headline-count" class="headline-count"></div>
-        <div id="headline-amount" class="headline-amount"></div>
-        <button id="btn-copy-summary" class="btn btn-small btn-ghost">Copy summary</button>
-      </div>
-
-      <div id="cogs-cta" class="banner banner-info" hidden>
-        Add product costs to unlock margin analysis.
-        <button id="btn-add-products" class="btn btn-small">Add products.csv</button>
-      </div>
-
-      <section class="overview">
-        <h2>Discount overview</h2>
-        <div id="discount-kpis" class="kpi-row"></div>
-        <div class="breakdown-grid">
-          <div>
-            <h3>By discount code</h3>
-            <table id="table-by-code" class="data-table"><tbody></tbody></table>
-          </div>
-          <div>
-            <h3>By product (SKU)</h3>
-            <table id="table-by-sku" class="data-table"><tbody></tbody></table>
-          </div>
-        </div>
-      </section>
-
-      <section class="leaks">
-        <h2>Leaks found</h2>
-        <div id="leak-cards"></div>
-      </section>
-
-      <section id="early-access" class="early-access">
-        <h2>Want Margiqo to monitor this automatically?</h2>
-        <p>
-          Stop exporting CSVs. We're building automatic Shopify monitoring that alerts you when products,
-          discounts or promotions start damaging your margins.
-        </p>
-        <form id="form-early-access">
-          <input type="email" id="input-email" placeholder="you@yourstore.com" required aria-label="Email" />
-          <button type="submit" class="btn btn-primary">Join early access</button>
-        </form>
-        <div id="early-access-success" class="early-access-success" hidden>
-          <p>Thanks — we'll be in touch.</p>
-          <div id="willingness-question" class="willingness-question">
-            <p>Optional: how much would automatic monitoring be worth to you?</p>
-            <div class="willingness-options">
-              <button type="button" class="btn btn-choice" data-value="none">I wouldn't pay for this</button>
-              <button type="button" class="btn btn-choice" data-value="9">€9/month</button>
-              <button type="button" class="btn btn-choice" data-value="19">€19/month</button>
-              <button type="button" class="btn btn-choice" data-value="39">€39/month</button>
-              <button type="button" class="btn btn-choice" data-value="79plus">€79+/month</button>
+      <div class="band report-masthead">
+        <div class="wrap">
+          <div class="results-header">
+            <div class="report-summary">
+              <h1 class="report-title">Margin scan</h1>
+              <div id="headline-amount" class="headline-amount"></div>
+              <div id="headline-count" class="headline-count"></div>
+              <button id="btn-copy-summary" class="btn btn-small btn-outline">Copy summary</button>
             </div>
-            <div id="willingness-thanks" class="willingness-thanks" hidden>Thanks for the feedback!</div>
+            <div class="scan-basis-panel">
+              <p class="scan-basis-title">What the scan read</p>
+              <dl id="scan-basis" class="scan-basis"></dl>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <div class="actions">
-        <button id="btn-restart" class="btn btn-ghost">Scan another store</button>
+      <div class="wrap section">
+        <div id="cogs-cta" class="banner banner-info" hidden>
+          <span>Add product costs to unlock margin analysis.</span>
+          <button id="btn-add-products" class="btn btn-small">Add products.csv</button>
+        </div>
+
+        <section class="overview">
+          <h2>Discount overview</h2>
+          <div id="discount-kpis" class="kpi-row"></div>
+          <div class="breakdown-grid">
+            <div class="breakdown">
+              <h3>By discount code</h3>
+              <table id="table-by-code" class="data-table">
+                <thead><tr><th>Code</th><th>Discount</th><th>Rate</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="breakdown">
+              <h3>By product</h3>
+              <table id="table-by-sku" class="data-table">
+                <thead><tr><th>Product</th><th>Discount</th><th>Rate</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="leaks">
+          <h2>Leaks found</h2>
+          <div id="leak-cards"></div>
+        </section>
+
+        <section id="early-access" class="early-access band">
+          <h2>Want Margiqo to watch this for you?</h2>
+          <p>
+            Stop exporting CSVs. We're building automatic Shopify monitoring that tells you
+            when a product, discount or promotion starts eating your margin — while it is still running.
+          </p>
+          <form id="form-early-access">
+            <input type="email" id="input-email" placeholder="you@yourstore.com" required aria-label="Email" />
+            <button type="submit" class="btn btn-primary">Join early access</button>
+          </form>
+          <div id="early-access-success" class="early-access-success" hidden>
+            <p class="ea-thanks">Thanks — we'll be in touch.</p>
+            <div id="willingness-question" class="willingness-question">
+              <p>One optional question: what would automatic monitoring be worth to you?</p>
+              <div class="willingness-options">
+                <button type="button" class="btn btn-choice" data-value="none">I wouldn't pay for this</button>
+                <button type="button" class="btn btn-choice" data-value="9">€9/month</button>
+                <button type="button" class="btn btn-choice" data-value="19">€19/month</button>
+                <button type="button" class="btn btn-choice" data-value="39">€39/month</button>
+                <button type="button" class="btn btn-choice" data-value="79plus">€79+/month</button>
+              </div>
+              <div id="willingness-thanks" class="willingness-thanks" hidden>Thanks for the feedback.</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="actions">
+          <button id="btn-restart" class="btn btn-ghost">Scan another store</button>
+        </div>
       </div>
     </section>
   </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Margiqo is an independent tool. It is not affiliated with, endorsed by or sponsored by Shopify.</p>
+    </div>
+  </footer>
 
   <template id="tpl-leak-card">
     <article class="leak-card">
       <div class="leak-head">
         <span class="severity-badge"></span>
-        <div>
+        <div class="leak-heading">
           <h3 class="leak-title"></h3>
           <div class="leak-subtitle"></div>
         </div>
@@ -196,12 +298,11 @@
       </div>
       <p class="leak-found"></p>
       <div class="leak-evidence"></div>
-      <div class="leak-not-included" hidden>
-        <strong>WHAT'S NOT INCLUDED</strong>
-        <ul></ul>
+      <p class="leak-not-included" hidden>Not included in this figure: <span class="leak-excluded"></span>.</p>
+      <div class="leak-action">
+        <span class="leak-action-label">Recommended</span>
+        <p class="leak-todo"></p>
       </div>
-      <div class="leak-margin-unknown" hidden></div>
-      <p class="leak-todo"></p>
       <details class="leak-calc">
         <summary>How is this calculated?</summary>
         <ol></ol>

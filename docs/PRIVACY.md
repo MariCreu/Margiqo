@@ -44,6 +44,17 @@ privacy. Events are logged to the browser console and an in-memory buffer
 by default; `ANALYTICS_ENDPOINT` in `public/src/config.js` is there for later,
 once real usage justifies it.
 
+## No third-party requests at all
+
+The page loads nothing from any domain but its own — no CDN, no analytics
+vendor, no embedded widget. That includes the typefaces: IBM Plex Sans is
+served from `public/fonts/` instead of a font CDN, because a CDN receives
+every visitor's IP address and `User-Agent` on page load. That is a real
+third-party disclosure, and it would be sitting directly underneath a
+landing page promising that nothing leaves the browser. Same reasoning as
+rejecting an analytics vendor above, applied to the kind of dependency
+that is easy not to notice.
+
 ## Known gap: no cross-visitor analytics aggregation yet
 
 Without `ANALYTICS_ENDPOINT`/`EARLY_ACCESS_FORM_ENDPOINT` configured (see

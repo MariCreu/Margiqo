@@ -12,7 +12,7 @@ import { diagnose } from "../public/src/lib/diagnose.js";
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const publicDir = path.join(projectRoot, "public");
 const PORT = 4321;
-const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".csv": "text/csv; charset=utf-8" };
+const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".woff2": "font/woff2", ".csv": "text/csv; charset=utf-8" };
 
 function startServer() {
   const server = createServer((req, res) => {

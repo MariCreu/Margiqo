@@ -106,11 +106,24 @@ function renderKpis(discount, currency) {
   }
 }
 
+// The report states what it actually read, so a reader can judge the figures.
+function renderScanBasis(meta) {
+  const coverage = meta.costCoverage;
+  const rows = [
+    ["Orders", meta.ordersCount.toLocaleString()],
+    ["Order lines", meta.lineItemsCount.toLocaleString()],
+    ["Products with a known cost", coverage.skusTotal > 0 ? `${coverage.skusWithCost} of ${coverage.skusTotal}` : "none provided"],
+  ];
+  document.getElementById("scan-basis").innerHTML = rows
+    .map(([term, value]) => `<div class="basis-row"><dt>${term}</dt><dd>${value}</dd></div>`)
+    .join("");
+}
+
 function renderTable(tableId, rows, labelFn, currency) {
   const tbody = document.querySelector(`#${tableId} tbody`);
   tbody.innerHTML = "";
   if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="3" style="color:var(--muted)">No material discount concentration found</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="3" class="table-empty">No material discount concentration found</td></tr>`;
     return;
   }
   for (const r of rows.slice(0, 6)) {
@@ -120,12 +133,14 @@ function renderTable(tableId, rows, labelFn, currency) {
   }
 }
 
+const SEVERITY_LABEL = { CRITICAL: "Critical", WARNING: "Warning", INFO: "Info" };
+
 function renderLeakCard(card, currency) {
   const tpl = document.getElementById("tpl-leak-card");
   const node = tpl.content.firstElementChild.cloneNode(true);
   node.dataset.severity = card.severity;
 
-  node.querySelector(".severity-badge").textContent = card.severity;
+  node.querySelector(".severity-badge").textContent = SEVERITY_LABEL[card.severity] || card.severity;
   node.querySelector(".leak-title").textContent = card.title;
   const subtitleEl = node.querySelector(".leak-subtitle");
   if (card.subtitle) subtitleEl.textContent = card.subtitle;
@@ -134,26 +149,22 @@ function renderLeakCard(card, currency) {
   const marginEl = node.querySelector(".leak-margin");
   if (card.knownProductMargin !== null) {
     marginEl.textContent = money(card.knownProductMargin, currency);
-    marginEl.style.color = card.knownProductMargin < 0 ? "var(--critical)" : "var(--ink)";
+    marginEl.dataset.sign = card.knownProductMargin < 0 ? "negative" : "positive";
   } else {
-    marginEl.textContent = "UNKNOWN";
-    marginEl.style.color = "var(--info)";
+    marginEl.textContent = "Margin unknown";
+    marginEl.dataset.sign = "unknown";
   }
 
   node.querySelector(".leak-found").textContent = card.whatWeFound;
 
   const evEl = node.querySelector(".leak-evidence");
-  evEl.innerHTML = card.evidence.map((e) => `<span><b>${e.value}</b> ${e.label}</span>`).join("");
+  evEl.innerHTML = card.evidence.map((e) => `<span class="ev"><b class="ev-value">${e.value}</b><i class="ev-label">${e.label}</i></span>`).join("");
 
   if (card.notIncluded) {
     const block = node.querySelector(".leak-not-included");
     block.hidden = false;
-    block.querySelector("ul").innerHTML = card.notIncluded.map((n) => `<li>${n}</li>`).join("");
-  }
-  if (card.marginUnknown) {
-    const block = node.querySelector(".leak-margin-unknown");
-    block.hidden = false;
-    block.textContent = "MARGIN IMPACT: UNKNOWN — add product costs to calculate.";
+    // Reads as one quiet sentence rather than a second panel competing with the figures.
+    block.querySelector(".leak-excluded").textContent = card.notIncluded.map((n) => n.toLowerCase()).join(", ");
   }
 
   node.querySelector(".leak-todo").textContent = card.whatToDo;
@@ -235,8 +246,15 @@ function renderResults(report, isDemo) {
   document.getElementById("demo-banner").hidden = !isDemo;
 
   document.getElementById("headline-count").textContent = `${report.headline.leaksCount} potential margin leak${report.headline.leaksCount === 1 ? "" : "s"} detected`;
-  document.getElementById("headline-amount").textContent =
-    report.headline.knownMarginAtRisk > 0 ? `${money(report.headline.knownMarginAtRisk, report.currency)} known product margin at risk` : "No known margin at risk found";
+  const amountEl = document.getElementById("headline-amount");
+  if (report.headline.knownMarginAtRisk > 0) {
+    amountEl.innerHTML = `<span class="fig"></span><span class="qual">known product margin at risk</span>`;
+    amountEl.querySelector(".fig").textContent = money(report.headline.knownMarginAtRisk, report.currency);
+  } else {
+    amountEl.innerHTML = `<span class="fig-none">No known margin at risk found</span>`;
+  }
+
+  renderScanBasis(report.meta);
 
   const cta = document.getElementById("cogs-cta");
   cta.hidden = report.meta.marginAnalysisAvailable;
@@ -293,7 +311,7 @@ function copySummary() {
 function wire() {
   track("landing_viewed");
 
-  document.getElementById("btn-start").addEventListener("click", () => showScreen("screen-upload"));
+  document.querySelectorAll("[data-go-upload]").forEach((el) => el.addEventListener("click", () => showScreen("screen-upload")));
   document.getElementById("btn-try-demo").addEventListener("click", runDemoScan);
   document.getElementById("btn-back-landing").addEventListener("click", () => showScreen("screen-landing"));
   document.getElementById("btn-add-products").addEventListener("click", () => showScreen("screen-upload"));

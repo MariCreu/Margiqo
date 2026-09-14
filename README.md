@@ -60,7 +60,7 @@ landing → understand the value in seconds → try demo data OR upload real CSV
 
 Additions on top of Phase 1: a rebuilt landing page (10-second value prop,
 privacy-as-advantage messaging, SEO meta/OG/structured data), a one-click
-**"Try with demo data"** path clearly marked `DEMO STORE — Sample data`
+**"See a sample scan"** path clearly marked `DEMO STORE — Sample data`
 throughout, a hardened CSV parser (currency symbols, European decimal
 commas, reordered columns, wrong-file-in-wrong-slot detection), a
 plain-text **"Copy summary"** share action (no PDF, nothing persisted), and
@@ -71,6 +71,35 @@ phase is actually trying to measure, and
 [`docs/PRIVACY.md`](docs/PRIVACY.md) for exactly what does and doesn't
 leave the browser.
 
+## Design
+
+The UI is deliberately shaped like a financial document rather than a
+dashboard: dark ink bands for the hero, the report masthead and the
+early-access panel, paper below, and rules and aligned figures instead of
+floating cards. Same reasoning as the rest of the product — a tool that
+asks a merchant to trust a € figure should look like something that shows
+its work.
+
+- **Type:** IBM Plex Sans (variable, 400–700), **self-hosted** in
+  `public/fonts/`. A font CDN would hand every visitor's IP to a third
+  party, directly under a landing page promising the opposite — see
+  `docs/PRIVACY.md`. Latin + latin-ext subsets only, ~84 KB. Figures use
+  `font-variant-numeric: tabular-nums`, so currency columns align without
+  being dressed up in a monospace face.
+- **Tokens:** `public/styles.css` runs entirely off CSS custom properties
+  — `--band-*` for the dark bands, `--paper`/`--surface`/`--rule` for the
+  light surfaces, `--signal`/`--alarm`/`--brass`/`--note` for semantics. A
+  full `prefers-color-scheme: dark` palette redefines the same names; no
+  component hard-codes a colour.
+- **The landing closes on the funnel, not a second form.** One ask on that
+  page — upload the CSV. A `Now` / `Next` pair states that the free scan is
+  the front door of the monitoring product, with no price attached, because
+  the willingness-to-pay question (`docs/PRICING.md`) is still what decides
+  that number.
+- **Print styles** exist because the results screen is a report someone
+  will want to send to a supplier or a co-founder.
+- No build step, no CSS framework, no JS for layout.
+
 ## Running it
 
 ```bash
@@ -79,10 +108,18 @@ npm test           # unit tests (node:test) for every detector + parser
 npm run e2e        # drives a real Chromium browser through 4 flows + mobile
 ```
 
-No build step, no dependencies to install for the app itself. The E2E
-script uses the `playwright` package pre-installed globally in this
-environment (symlinked into `node_modules/`); on another machine, run
-`npm i -D playwright && npx playwright install chromium` first.
+No build step and no dependencies to install for the app itself — `npm start`
+and `npm test` both work on a clean checkout.
+
+`npm run e2e` is the exception: it drives a real browser, so it needs the
+`playwright` devDependency plus a one-off Chromium download:
+
+```bash
+npm i -D playwright && npx playwright install chromium
+```
+
+The PNGs in `e2e/screenshots/` are overwritten on every run, so they always
+show the UI as of the last suite run.
 
 Try it with the demo dataset in `public/demo-data/` — see
 [`docs/DEMO-SCENARIO.md`](docs/DEMO-SCENARIO.md) for what it contains and
@@ -128,6 +165,12 @@ screenshots in `e2e/screenshots/`) covering the demo flow, a
 reordered/quoted-real-format CSV fixture, missing-COGS graceful
 degradation, invalid-CSV recovery, and a mobile viewport check.
 
+**Re-verified after the redesign:** all 49 unit tests and all 5 E2E flows
+pass against the redesigned markup, and `e2e/screenshots/` was regenerated
+from it. Checked by hand on top of the suite, which does not cover them: the
+`prefers-color-scheme: dark` palette, both landing CTAs, and the
+willingness-to-pay follow-up.
+
 **Not yet wired:** a real lead/analytics backend. The plan was a dedicated
 Supabase project; the account's free-tier project limit was already used
 by two unrelated existing projects, and creating a third — or pausing one
@@ -143,6 +186,10 @@ see `docs/VALIDATION-CRITERIA.md` — not Shopify OAuth, not Phase 2.
 ## Repository / deployment status
 
 Source lives at [github.com/MariCreu/Margiqo](https://github.com/MariCreu/Margiqo).
-The static site is deployed via Cloudflare Pages, connected to this repo —
-see `docs/DEPLOYMENT.md` for how the build is configured and how the
-`margiqo.com` custom domain is attached.
+Cloudflare builds the repo with `npx wrangler deploy` and serves `public/`
+as static assets (`wrangler.jsonc` → `assets.directory`), so what ships is
+a Worker rather than a Pages site.
+
+**Live at `margiqo.maricreu86.workers.dev`. The `margiqo.com` custom domain
+is not attached yet** — that step is written up in `docs/DEPLOYMENT.md` and
+is still pending.
