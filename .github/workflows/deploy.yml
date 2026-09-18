@@ -74,3 +74,9 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Both previous runs failed at "Missing entry-point" before ever
+          # reaching auth: wrangler-action@v3 installs Wrangler v3 by
+          # default, and v3 cannot read wrangler.jsonc (JSONC support, and
+          # with it the `main`/`assets`/`kv_namespaces` fields this repo
+          # relies on, only exists from Wrangler v4 on).
+          wranglerVersion: "4"
