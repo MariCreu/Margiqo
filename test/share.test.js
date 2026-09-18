@@ -36,3 +36,15 @@ test("share summary never claims a known figure for an UNKNOWN-margin leak", () 
   const summary = buildShareSummary(report, { isDemo: false });
   assert.ok(summary.includes("UNKNOWN"));
 });
+
+test("share summary translates to Spanish when locale is es", () => {
+  const ordersCsv = [ORDER_HEADER, "#1,EUR,SUMMER20,27,Summer Bundle Pack,SUMMER-PACK,68.75,371.25"].join("\n");
+  const productsCsv = [PRODUCT_HEADER, "SUMMER-PACK,Summer Bundle Pack,58"].join("\n");
+  const report = diagnose({ ordersCsvText: ordersCsv, productsCsvText: productsCsv, locale: "es" });
+
+  const summary = buildShareSummary(report, { isDemo: true, locale: "es" });
+  assert.ok(summary.startsWith("Escaneo de margen de Margiqo (datos de demostración)"));
+  assert.ok(summary.includes("fuga de margen detectada"));
+  assert.ok(summary.includes("No incluido: comisiones de pago"));
+  assert.ok(!summary.includes("<"), "summary should be plain text, not HTML");
+});

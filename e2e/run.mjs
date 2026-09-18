@@ -17,7 +17,7 @@ const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; cha
 function startServer() {
   const server = createServer((req, res) => {
     let urlPath = decodeURIComponent(req.url.split("?")[0]);
-    if (urlPath === "/") urlPath = "/index.html";
+    if (urlPath.endsWith("/")) urlPath += "index.html";
     const filePath = path.join(publicDir, urlPath);
     fs.readFile(filePath, (err, data) => {
       if (err) {
@@ -177,6 +177,28 @@ async function mobileLanding(browser) {
   console.log("  OK — no horizontal overflow at 390px width");
 }
 
+async function flowE_spanishLocale(browser) {
+  console.log("Flow E: /es/ landing -> demo scan -> Spanish result text");
+  const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });
+  await page.goto(`http://localhost:${PORT}/es/`);
+  assert.equal(await page.getAttribute("html", "lang"), "es");
+  assert.match(await page.textContent("h1"), /Encuentra las ventas/i);
+
+  await page.click("#btn-try-demo");
+  await page.waitForSelector("#screen-results:not([hidden])");
+  await page.waitForFunction(() => document.getElementById("headline-count").textContent.length > 0);
+
+  assert.match(await page.textContent("#demo-banner"), /TIENDA DE DEMOSTRACIÓN/);
+  assert.match(await page.textContent("#headline-count"), /fuga.*de margen detectada/);
+
+  await page.click(".leak-card details summary");
+  assert.match(await page.textContent(".leak-card details ol"), /unidades/);
+
+  await page.screenshot({ path: path.join(shotsDir, "e1-es-results.png"), fullPage: true });
+  await page.close();
+  console.log("  OK");
+}
+
 async function main() {
   // Ground truth for Flow A's numbers, computed the same way the app does.
   const expected = diagnose({
@@ -192,6 +214,7 @@ async function main() {
     await flowB_realFormatFixture(browser);
     await flowC_missingCogs(browser);
     await flowD_invalidCsvRecovery(browser);
+    await flowE_spanishLocale(browser);
     await mobileLanding(browser);
 
     console.log("\nAll E2E flows passed. Screenshots in e2e/screenshots/");

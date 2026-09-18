@@ -1,7 +1,7 @@
-export function money(value, currency = "EUR") {
+export function money(value, currency = "EUR", numberLocale = "en-US") {
   if (value === null || value === undefined || Number.isNaN(value)) return "—";
   try {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat(numberLocale, {
       style: "currency",
       currency,
       minimumFractionDigits: 0,
@@ -12,10 +12,10 @@ export function money(value, currency = "EUR") {
   }
 }
 
-export function moneyPrecise(value, currency = "EUR") {
+export function moneyPrecise(value, currency = "EUR", numberLocale = "en-US") {
   if (value === null || value === undefined || Number.isNaN(value)) return "—";
   try {
-    return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(value);
+    return new Intl.NumberFormat(numberLocale, { style: "currency", currency }).format(value);
   } catch {
     return `€${value.toFixed(2)}`;
   }

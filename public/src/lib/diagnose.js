@@ -2,41 +2,46 @@ import { parseOrdersCsv, parseProductsCsv, attachCost } from "./shopify.js";
 import { analyzeDiscounts } from "./discountLeakage.js";
 import { analyzeMargin, THRESHOLDS as MARGIN_THRESHOLDS } from "./marginLeak.js";
 import { money, moneyPrecise, pct } from "./format.js";
+import { getStrings, getNumberLocale } from "./i18n.js";
 
-export const NOT_INCLUDED = ["Payment fees", "Advertising", "Fulfillment", "Actual shipping cost", "Returns"];
+export const NOT_INCLUDED = getStrings("en").diagnose.notIncluded;
 
 const SEVERITY_ORDER = { CRITICAL: 0, WARNING: 1, INFO: 2 };
 
-function marginCardFromFlag(flag, currency) {
+function marginCardFromFlag(flag, currency, locale) {
+  const t = getStrings(locale).diagnose;
+  const numberLocale = getNumberLocale(locale);
   const avgNet = flag.revenueAfterDiscount / flag.units;
   const avgCost = flag.cogsKnownTotal / flag.units;
-  const codeSuffix = flag.discountCode ? ` under discount code "${flag.discountCode}"` : "";
+  const codeSuffix = t.codeSuffix(flag.discountCode);
 
   if (flag.type === "negative_known_margin") {
     const whatToDo = flag.causedByDiscount
-      ? `Exclude ${flag.name} from discount code "${flag.discountCode}", or reduce the discount so it stays above product cost.`
-      : `Review the base price or supplier cost of ${flag.name} — it is unprofitable on known costs alone${codeSuffix}, before any discount is even considered.`;
+      ? t.negativeMargin.whatToDoCaused(flag.name, flag.discountCode)
+      : t.negativeMargin.whatToDoOther(flag.name, codeSuffix);
 
     return {
       id: `neg-${flag.sku}-${flag.discountCode || "none"}`,
       severity: "CRITICAL",
       title: flag.name,
-      subtitle: flag.discountCode ? `Discount code: ${flag.discountCode}` : null,
-      whatWeFound: `${flag.units} units were sold below product cost${flag.causedByDiscount ? " after discount" : codeSuffix}.`,
+      subtitle: flag.discountCode ? t.negativeMargin.subtitle(flag.discountCode) : null,
+      whatWeFound: flag.causedByDiscount
+        ? t.negativeMargin.whatFoundCaused(flag.units)
+        : t.negativeMargin.whatFoundOther(flag.units, codeSuffix),
       evidence: [
-        { label: "Revenue after discount", value: money(flag.revenueAfterDiscount, currency) },
-        { label: "Product cost", value: money(flag.cogsKnownTotal, currency) },
+        { label: t.evidence.revenueAfterDiscount, value: money(flag.revenueAfterDiscount, currency, numberLocale) },
+        { label: t.evidence.productCost, value: money(flag.cogsKnownTotal, currency, numberLocale) },
         ...(flag.costCoverage < 1
-          ? [{ label: "Cost data coverage", value: `${Math.round(flag.costCoverage * 100)}% of these units` }]
+          ? [{ label: t.evidence.costDataCoverageLabel, value: t.evidence.costCoverageValue(Math.round(flag.costCoverage * 100)) }]
           : []),
       ],
       knownProductMargin: flag.knownMargin,
-      notIncluded: NOT_INCLUDED,
+      notIncluded: t.notIncluded,
       whatToDo,
       calculation: [
-        `${flag.units} units × avg. net price ${moneyPrecise(avgNet, currency)} = ${money(flag.revenueAfterDiscount, currency)}`,
-        `${flag.units} units × cost/unit ${moneyPrecise(avgCost, currency)} = ${money(flag.cogsKnownTotal, currency)}`,
-        `Known product margin = ${money(flag.revenueAfterDiscount, currency)} − ${money(flag.cogsKnownTotal, currency)} = ${money(flag.knownMargin, currency)}`,
+        t.calc.avgPriceLine(flag.units, moneyPrecise(avgNet, currency, numberLocale), money(flag.revenueAfterDiscount, currency, numberLocale)),
+        t.calc.costLine(flag.units, moneyPrecise(avgCost, currency, numberLocale), money(flag.cogsKnownTotal, currency, numberLocale)),
+        t.calc.marginLine(money(flag.revenueAfterDiscount, currency, numberLocale), money(flag.cogsKnownTotal, currency, numberLocale), money(flag.knownMargin, currency, numberLocale)),
       ],
       impact: flag.impact,
     };
@@ -48,28 +53,31 @@ function marginCardFromFlag(flag, currency) {
     severity: "WARNING",
     title: flag.name,
     subtitle: null,
-    whatWeFound: `${flag.units} units sold with only ${pct(flag.knownMarginRate, 1)} known margin — a small cost increase or extra discount would erase it.`,
+    whatWeFound: t.thinMargin.whatFound(flag.units, pct(flag.knownMarginRate, 1)),
     evidence: [
-      { label: "Revenue after discount", value: money(flag.revenueAfterDiscount, currency) },
-      { label: "Product cost", value: money(flag.cogsKnownTotal, currency) },
+      { label: t.evidence.revenueAfterDiscount, value: money(flag.revenueAfterDiscount, currency, numberLocale) },
+      { label: t.evidence.productCost, value: money(flag.cogsKnownTotal, currency, numberLocale) },
       ...(flag.costCoverage < 1
-        ? [{ label: "Cost data coverage", value: `${Math.round(flag.costCoverage * 100)}% of these units` }]
+        ? [{ label: t.evidence.costDataCoverageLabel, value: t.evidence.costCoverageValue(Math.round(flag.costCoverage * 100)) }]
         : []),
     ],
     knownProductMargin: flag.knownMargin,
-    notIncluded: NOT_INCLUDED,
-    whatToDo: `Review pricing or supplier cost for ${flag.name} before pushing more volume through it.`,
+    notIncluded: t.notIncluded,
+    whatToDo: t.thinMargin.whatToDo(flag.name),
     calculation: [
-      `${flag.units} units × avg. net price ${moneyPrecise(avgNet, currency)} = ${money(flag.revenueAfterDiscount, currency)}`,
-      `${flag.units} units × cost/unit ${moneyPrecise(avgCost, currency)} = ${money(flag.cogsKnownTotal, currency)}`,
-      `Known margin rate = ${money(flag.knownMargin, currency)} ÷ ${money(flag.revenueAfterDiscount, currency)} = ${pct(flag.knownMarginRate, 1)}`,
+      t.calc.avgPriceLine(flag.units, moneyPrecise(avgNet, currency, numberLocale), money(flag.revenueAfterDiscount, currency, numberLocale)),
+      t.calc.costLine(flag.units, moneyPrecise(avgCost, currency, numberLocale), money(flag.cogsKnownTotal, currency, numberLocale)),
+      t.calc.marginRateLine(money(flag.knownMargin, currency, numberLocale), money(flag.revenueAfterDiscount, currency, numberLocale), pct(flag.knownMarginRate, 1)),
     ],
     impact: Math.abs(flag.impact),
   };
 }
 
-function concentrationCard(flag, currency, marginKnownForKey) {
+function concentrationCard(flag, currency, marginKnownForKey, locale) {
   if (marginKnownForKey) return null; // a sharper, evidenced card already covers this SKU/code
+
+  const t = getStrings(locale).diagnose;
+  const numberLocale = getNumberLocale(locale);
 
   // We may already have enough cost data on these exact lines to know the
   // margin is fine — in that case there's nothing to warn about, and saying
@@ -86,37 +94,34 @@ function concentrationCard(flag, currency, marginKnownForKey) {
     }
   }
 
-  const subject = flag.dimension === "code" ? `Discount code "${flag.label}"` : flag.label;
-  const whatToDo =
-    coverage > 0
-      ? `Product cost data only covers ${Math.round(coverage * 100)}% of these sales — add the missing "Cost per item" values to confirm whether this is actually eating margin.`
-      : "Add product costs to calculate the true margin impact — right now we can only confirm the discount is concentrated, not whether it's unprofitable.";
+  const subject = flag.dimension === "code" ? t.concentration.subjectCode(flag.label) : flag.label;
+  const whatToDo = coverage > 0 ? t.concentration.whatToDoPartial(Math.round(coverage * 100)) : t.concentration.whatToDoNone;
 
   return {
     id: `conc-${flag.dimension}-${flag.key}`,
     severity: "INFO",
     title: subject,
-    subtitle: flag.dimension === "code" ? null : "Concentrated discount exposure",
-    whatWeFound: `${subject} accounts for ${pct(flag.discountShare)} of all discounts given, but only ${pct(flag.revenueShare)} of gross revenue — an average ${pct(flag.discountRate)} off, concentrated on a narrow set of sales.`,
+    subtitle: flag.dimension === "code" ? null : t.concentration.subtitleSku,
+    whatWeFound: t.concentration.whatFound(subject, pct(flag.discountShare), pct(flag.revenueShare), pct(flag.discountRate)),
     evidence: [
-      { label: "Total discount", value: money(flag.totalDiscount, currency) },
-      { label: "Gross revenue covered", value: money(flag.grossRevenue, currency) },
-      { label: "Average discount rate", value: pct(flag.discountRate) },
+      { label: t.evidence.totalDiscount, value: money(flag.totalDiscount, currency, numberLocale) },
+      { label: t.evidence.grossRevenueCovered, value: money(flag.grossRevenue, currency, numberLocale) },
+      { label: t.evidence.averageDiscountRate, value: pct(flag.discountRate) },
     ],
     knownProductMargin: null,
     marginUnknown: true,
     notIncluded: null,
     whatToDo,
     calculation: [
-      `Discount share = ${money(flag.totalDiscount, currency)} ÷ total discounts = ${pct(flag.discountShare)}`,
-      `Revenue share = ${money(flag.grossRevenue, currency)} ÷ total gross revenue = ${pct(flag.revenueShare)}`,
-      `Concentration ratio = ${pct(flag.discountShare)} ÷ ${pct(flag.revenueShare)} = ${flag.concentrationRatio.toFixed(1)}x`,
+      t.calc.discountShareLine(money(flag.totalDiscount, currency, numberLocale), pct(flag.discountShare)),
+      t.calc.revenueShareLine(money(flag.grossRevenue, currency, numberLocale), pct(flag.revenueShare)),
+      t.calc.concentrationLine(pct(flag.discountShare), pct(flag.revenueShare), flag.concentrationRatio.toFixed(1)),
     ],
     impact: flag.totalDiscount,
   };
 }
 
-export function diagnose({ ordersCsvText, productsCsvText }) {
+export function diagnose({ ordersCsvText, productsCsvText, locale = "en" }) {
   const orders = parseOrdersCsv(ordersCsvText);
 
   if (orders.meta.missingRequired.length > 0) {
@@ -141,7 +146,7 @@ export function diagnose({ ordersCsvText, productsCsvText }) {
 
   if (marginResult.applicable) {
     for (const flag of marginResult.flags) {
-      cards.push(marginCardFromFlag(flag, currency));
+      cards.push(marginCardFromFlag(flag, currency, locale));
       marginEvidencedKeys.add(`sku:${flag.sku}`);
       marginEvidencedKeys.add(`code:${flag.discountCode || ""}`);
     }
@@ -150,7 +155,7 @@ export function diagnose({ ordersCsvText, productsCsvText }) {
   if (discountResult) {
     for (const flag of discountResult.flags) {
       const key = flag.dimension === "code" ? `code:${flag.key || ""}` : `sku:${flag.key}`;
-      const card = concentrationCard(flag, currency, marginEvidencedKeys.has(key));
+      const card = concentrationCard(flag, currency, marginEvidencedKeys.has(key), locale);
       if (card) cards.push(card);
     }
   }

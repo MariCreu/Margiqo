@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Política de privacidad — Margiqo</title>
+  <meta name="description" content="Qué recopila Margiqo, por qué, y cómo pedir que se elimine — en lenguaje claro, coincidiendo exactamente con lo que hace el código." />
+  <link rel="canonical" href="https://margiqo.com/es/privacy.html" />
+  <link rel="alternate" hreflang="en" href="https://margiqo.com/privacy.html" />
+  <link rel="alternate" hreflang="es" href="https://margiqo.com/es/privacy.html" />
+  <link rel="alternate" hreflang="x-default" href="https://margiqo.com/privacy.html" />
+  <meta name="theme-color" content="#092321" />
+  <meta name="robots" content="index,follow" />
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar band">
+    <div class="wrap topbar-inner">
+      <a href="/es/" style="color:inherit;text-decoration:none;">
+        <span class="wordmark">
+          <svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect class="mark-bar" x="2" y="4" width="4.5" height="9" />
+            <rect class="mark-bar" x="9.75" y="7" width="4.5" height="6" />
+            <rect class="mark-bar mark-bar-leak" x="17.5" y="13" width="4.5" height="7" />
+            <line x1="0" y1="13" x2="24" y2="13" />
+          </svg>
+          Margiqo
+        </span>
+      </a>
+      <a class="tag" href="/privacy.html" hreflang="en">EN</a>
+      <span class="tag">prototipo</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap section" style="max-width: 760px;">
+      <h1 class="page-title">Política de privacidad</h1>
+      <p class="lede lede-paper">Vigente desde el 18 de septiembre de 2026. Escrita para coincidir exactamente con lo que hace el código — consulta <a href="https://github.com/MariCreu/Margiqo/blob/main/docs/PRIVACY.md">docs/PRIVACY.md</a> en el código fuente para la versión técnica de cada afirmación de abajo.</p>
+
+      <h2>Quién es responsable de estos datos</h2>
+      <p>Mari Cruz Martínez Sanchis (autónoma), que opera Margiqo. Contacto para cualquier consulta o solicitud sobre privacidad: <a href="mailto:privacy@margiqo.com">privacy@margiqo.com</a>.</p>
+
+      <h2>En este sitio ocurren dos cosas distintas — solo una de ellas son "tus datos" para nosotros</h2>
+      <p>
+        <strong>Escanear los CSV exportados de tu tienda nunca pasa por nosotros.</strong> La subida, el
+        análisis y el resultado se calculan por completo con JavaScript que se ejecuta en tu propio
+        navegador. La exportación de tus pedidos, los costes de tus productos, tus cifras de ingresos,
+        tus SKU — nada de eso se envía jamás a ningún servidor, así que nunca lo recibimos, nunca lo
+        almacenamos, y no tenemos nada que borrar, porque nunca lo tuvimos. Puedes comprobarlo tú
+        mismo: abre el inspector de red de tu navegador mientras escaneas, o lee el código fuente.
+      </p>
+      <p>
+        <strong>Unirte al acceso anticipado es lo único que sí nos envía datos</strong> — solo cuando
+        escribes tu email en el formulario y pulsas enviar. Todo lo de abajo trata sobre eso.
+      </p>
+
+      <h2>Qué recopilamos cuando te unes al acceso anticipado</h2>
+      <p>Enviar el formulario de acceso anticipado envía, a nuestro propio servidor (un Cloudflare Worker en <code>/api/early-access</code>, nada en el servidor de terceros):</p>
+      <ul>
+        <li><strong>Tu dirección de email</strong></li>
+        <li>El dominio que te refirió aquí, si lo hay (p. ej. <code>google.com</code>) — nunca la URL completa ni ningún parámetro</li>
+        <li>Si escaneaste una tienda de demostración o la tuya</li>
+        <li>Cuántas fugas encontró el escaneo, y si se desbloqueó el análisis de margen (es decir, si proporcionaste costes de producto) — dos números, no los datos subyacentes</li>
+        <li>Tu respuesta a la pregunta opcional de "cuánto valdría esto para ti", si la respondiste</li>
+      </ul>
+      <p>
+        Esa es la lista completa. El servidor la aplica de forma independiente a la página que estás
+        viendo — un fallo en la página, o una petición manipulada, no puede colar nada más en el
+        almacenamiento. Nada sobre tu tienda — ningún SKU, ninguna cifra de ingresos, ningún contenido
+        de pedido, ningún nombre de archivo — está en esta lista porque nada de eso se envía nunca.
+      </p>
+
+      <h2>Por qué lo recopilamos, y en qué base legal</h2>
+      <p>
+        Para avisarte cuando esté disponible la monitorización automática de Shopify (la función "a
+        continuación" descrita en el resultado del escaneo), y — si respondes a la pregunta opcional de
+        precio — para entender si merece la pena construirla. La base legal es tu consentimiento: nos
+        diste tu email al elegir enviar el formulario. No se recopila nada antes de esa acción, y nada
+        se infiere ni se compra de otra fuente.
+      </p>
+
+      <h2>Dónde se almacena</h2>
+      <p>
+        En Cloudflare Workers KV, un servicio de almacenamiento de Cloudflare, Inc., que actúa como
+        nuestro encargado del tratamiento para este fin. No usamos ningún otro proveedor de
+        tratamiento de datos, ninguna plataforma de analítica y ningún CRM.
+      </p>
+
+      <h2>Cuánto tiempo lo conservamos</h2>
+      <p>
+        Hasta que nos pidas que lo eliminemos, o hasta que se descontinúe el programa de acceso
+        anticipado que estos datos respaldan — lo que ocurra primero. No hay caducidad automática,
+        porque no hay tratamiento continuado que la justifique más allá del propósito anterior.
+      </p>
+
+      <h2>Tus derechos</h2>
+      <p>
+        Según el RGPD puedes pedirnos, en cualquier momento, que: te digamos qué tenemos sobre ti, lo
+        corrijamos, lo eliminemos, o dejemos de usarlo. Escribe a
+        <a href="mailto:privacy@margiqo.com">privacy@margiqo.com</a> desde la dirección en cuestión
+        (para que podamos encontrar y verificar el registro) y responderemos en el plazo de un mes.
+        También puedes reclamar ante tu autoridad de protección de datos — en España, la
+        <a href="https://www.aepd.es" target="_blank" rel="noopener">AEPD</a> — si no estás conforme
+        con cómo gestionamos una solicitud.
+      </p>
+
+      <h2>Sin cookies, sin rastreadores, sin terceros</h2>
+      <p>
+        Esta página no establece cookies ni carga nada desde ningún dominio de terceros — ningún
+        proveedor de analítica, ningún widget incrustado, ningún CDN de fuentes (la tipografía se sirve
+        desde este mismo dominio precisamente para que cargar esta página no filtre por sí misma tu IP
+        a un CDN). La única petición de red que este sitio hace hacia nosotros es el envío de acceso
+        anticipado descrito arriba.
+      </p>
+
+      <h2>Menores</h2>
+      <p>Margiqo es una herramienta de negocio para comerciantes de Shopify y no está dirigida a menores. No recopilamos datos a sabiendas de nadie menor de 16 años.</p>
+
+      <h2>Cambios en esta política</h2>
+      <p>Si lo que hace realmente el código cambia, esta página cambia con ello — ese es el estándar que nos exigimos. Consulta la fecha de vigencia arriba.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Margiqo es una herramienta independiente. No está afiliada, respaldada ni patrocinada por Shopify. <a href="/es/privacy.html">Política de privacidad</a></p>
+    </div>
+  </footer>
+</body>
+</html>

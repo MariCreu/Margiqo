@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Margiqo — Escáner gratuito de fugas de margen para Shopify</title>
+  <meta name="description" content="Sube tus exportaciones de pedidos y costes de producto de Shopify y descubre qué descuentos y productos están destruyendo tu margen en silencio. Escaneo gratuito, sin cuenta, todo ocurre en tu navegador." />
+  <link rel="canonical" href="https://margiqo.com/es/" />
+  <link rel="alternate" hreflang="en" href="https://margiqo.com/" />
+  <link rel="alternate" hreflang="es" href="https://margiqo.com/es/" />
+  <link rel="alternate" hreflang="x-default" href="https://margiqo.com/" />
+  <meta name="theme-color" content="#092321" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Margiqo — Escáner gratuito de fugas de margen para Shopify" />
+  <meta property="og:description" content="Encuentra las ventas que te están costando dinero. Sube tus exportaciones de Shopify y descubre qué productos y descuentos pueden estar destruyendo tu margen." />
+  <meta property="og:url" content="https://margiqo.com/es/" />
+  <meta property="og:image" content="https://margiqo.com/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Margiqo: ingresos tras descuento 1.485 € menos coste de producto 1.566 € deja un margen de −81 €." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://margiqo.com/og.png" />
+  <meta name="twitter:title" content="Margiqo — Escáner gratuito de fugas de margen para Shopify" />
+  <meta name="twitter:description" content="Encuentra las ventas que te están costando dinero. Escaneo gratuito, sin cuenta, los datos nunca salen de tu navegador." />
+
+  <meta name="robots" content="index,follow" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Margiqo",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any (runs in browser)",
+    "description": "Escáner gratuito de fugas de margen para Shopify. Sube tus exportaciones de pedidos y costes de producto para encontrar descuentos y productos que están destruyendo tu margen.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <link rel="preload" href="/fonts/IBMPlexSans-var-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar band">
+    <div class="wrap topbar-inner">
+      <span class="wordmark">
+        <svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect class="mark-bar" x="2" y="4" width="4.5" height="9" />
+          <rect class="mark-bar" x="9.75" y="7" width="4.5" height="6" />
+          <rect class="mark-bar mark-bar-leak" x="17.5" y="13" width="4.5" height="7" />
+          <line x1="0" y1="13" x2="24" y2="13" />
+        </svg>
+        Margiqo
+      </span>
+      <a class="tag" href="/" hreflang="en">EN</a>
+      <span class="tag">prototipo</span>
+    </div>
+  </header>
+
+  <main id="app">
+    <!-- LANDING -->
+    <section id="screen-landing" class="screen" data-screen>
+      <div class="hero band">
+        <div class="wrap hero-inner">
+          <div class="hero-copy">
+            <h1>Encuentra las ventas que te están costando dinero.</h1>
+            <p class="lede">
+              Tu exportación de Shopify ya lista cada venta con descuento. Lo que nunca hace es restar
+              lo que te costó el producto — así que los pedidos que pierden dinero se ven igual que los que ganan.
+            </p>
+            <div class="cta-row">
+              <button id="btn-start" class="btn btn-primary btn-lg" data-go-upload>Escanear mi tienda</button>
+              <button id="btn-try-demo" class="btn btn-secondary btn-lg">Ver un escaneo de ejemplo</button>
+            </div>
+          </div>
+
+          <figure class="ledger" aria-label="Ejemplo de resultado de la tienda de muestra">
+            <div class="ledger-row">
+              <span class="ledger-label">Ingresos tras descuento</span>
+              <span class="ledger-value">1.485 €</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-label">Coste del producto</span>
+              <span class="ledger-value">1.566 €</span>
+            </div>
+            <div class="ledger-row ledger-row-total">
+              <span class="ledger-label">Margen</span>
+              <span class="ledger-value">−81 €</span>
+            </div>
+            <figcaption>
+              27 unidades de un producto, todas vendidas con el código SUMMER20. Ambos importes ya
+              estaban en las exportaciones de la tienda de muestra.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="facts-strip">
+        <ul class="facts wrap">
+          <li><b>Nada se sube a ningún servidor.</b> Tus archivos se leen y analizan en esta pestaña del navegador.</li>
+          <li><b>Sin cuenta, sin tarjeta.</b> Cierra la pestaña y cada archivo que elegiste desaparece.</li>
+          <li><b>Cada cifra es auditable.</b> Cada resultado se expande para mostrar su propio cálculo.</li>
+        </ul>
+      </div>
+
+      <div class="wrap section">
+        <h2>Qué comprueba el escaneo</h2>
+        <div class="checks">
+          <div class="check">
+            <h3>Fuga por descuentos</h3>
+            <p>Qué códigos de descuento y productos absorben una parte desproporcionada de todo lo que regalaste — medido frente a los ingresos que realmente generaron.</p>
+            <p class="check-needs">Necesita la exportación de pedidos</p>
+          </div>
+          <div class="check">
+            <h3>Margen de producto bajo o negativo</h3>
+            <p>Unidades vendidas por debajo de lo que te costaron una vez aplicado el descuento, más productos de margen ajustado con suficiente volumen como para importar.</p>
+            <p class="check-needs">Necesita la exportación de pedidos y los costes de producto</p>
+          </div>
+        </div>
+        <p class="footnote">
+          Las devoluciones, el coste de envío, las comisiones de pago y la publicidad todavía no se
+          analizan. Cada resultado indica cuáles de estos deja fuera, para que ninguna cifra finja ser
+          una cuenta de resultados completa.
+        </p>
+      </div>
+
+      <div class="wrap section">
+        <div class="closing">
+          <div class="closing-copy">
+            <h2>Un escaneo te muestra el mes pasado. El daño ocurre esta semana.</h2>
+            <p>
+              Un CSV te dice qué descuentos te perjudicaron una vez que el dinero ya salió. Lo que
+              realmente quieres es saber el día en que un producto cae por debajo de coste, mientras
+              la promoción todavía está activa.
+            </p>
+            <p class="closing-turn">Este escaneo es cómo averiguas si lo necesitas.</p>
+            <button class="btn btn-primary btn-lg" data-go-upload>Escanear mi tienda</button>
+          </div>
+          <dl class="roadmap">
+            <div class="roadmap-row">
+              <dt>Ahora</dt>
+              <dd>Exportas dos CSV y Margiqo te muestra lo que ya te costaron los últimos meses. Gratis, y seguirá siéndolo.</dd>
+            </div>
+            <div class="roadmap-row">
+              <dt>A continuación</dt>
+              <dd>Margiqo vigilará la tienda directamente y te avisará el día en que un producto, código o promoción empiece a venderse por debajo de coste.</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="wrap section">
+        <div class="privacy">
+          <h2>Los datos de tu tienda nunca salen de tu navegador</h2>
+          <ul>
+            <li>Los archivos se leen y procesan localmente, con JavaScript ejecutándose en tu equipo</li>
+            <li>No se envía a ningún sitio ningún dato de cliente, contenido de pedido o archivo</li>
+            <li>Sin cuenta ni inicio de sesión — no guardamos nada sobre tu tienda</li>
+            <li>Actualiza la página y todo lo que subiste desaparece</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- UPLOAD -->
+    <section id="screen-upload" class="screen" data-screen hidden>
+      <div class="wrap section">
+        <h1 class="page-title">Sube tus exportaciones</h1>
+        <p class="lede lede-paper">Dos archivos desde tu administrador de Shopify. El segundo es opcional, pero es lo que convierte "este descuento parece grande" en "esta venta te hizo perder dinero".</p>
+
+        <ol class="upload-grid">
+          <li class="upload-card">
+            <div class="upload-head">
+              <span class="step">1</span>
+              <div>
+                <h3>Exportación de pedidos <span class="req">obligatorio</span></h3>
+                <p class="howto">Admin de Shopify → Pedidos → Exportar</p>
+              </div>
+            </div>
+            <input type="file" id="file-orders" accept=".csv,text/csv" />
+            <div id="orders-status" class="file-status" aria-live="polite"></div>
+          </li>
+          <li class="upload-card">
+            <div class="upload-head">
+              <span class="step">2</span>
+              <div>
+                <h3>Exportación de productos <span class="opt">recomendado</span></h3>
+                <p class="howto">Admin de Shopify → Productos → Exportar</p>
+              </div>
+            </div>
+            <input type="file" id="file-products" accept=".csv,text/csv" />
+            <div id="products-status" class="file-status" aria-live="polite"></div>
+            <p class="hint">Sin él seguimos pudiendo encontrar fugas por descuento, pero toda cifra de margen queda marcada como desconocida.</p>
+          </li>
+        </ol>
+
+        <div id="upload-error" class="banner banner-error" hidden></div>
+
+        <div class="actions">
+          <button id="btn-scan" class="btn btn-primary btn-lg" disabled>Ejecutar escaneo</button>
+          <button id="btn-back-landing" class="btn btn-ghost">Volver</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="screen-results" class="screen" data-screen hidden>
+      <div id="demo-banner" class="demo-banner" hidden>TIENDA DE DEMOSTRACIÓN — Datos de muestra, no tu tienda</div>
+
+      <div class="band report-masthead">
+        <div class="wrap">
+          <div class="results-header">
+            <div class="report-summary">
+              <h1 class="report-title">Escaneo de margen</h1>
+              <div id="headline-amount" class="headline-amount"></div>
+              <div id="headline-count" class="headline-count"></div>
+              <button id="btn-copy-summary" class="btn btn-small btn-outline">Copiar resumen</button>
+            </div>
+            <div class="scan-basis-panel">
+              <p class="scan-basis-title">Qué leyó el escaneo</p>
+              <dl id="scan-basis" class="scan-basis"></dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wrap section">
+        <div id="cogs-cta" class="banner banner-info" hidden>
+          <span>Añade costes de producto para desbloquear el análisis de margen.</span>
+          <button id="btn-add-products" class="btn btn-small">Añadir products.csv</button>
+        </div>
+
+        <section class="overview">
+          <h2>Resumen de descuentos</h2>
+          <div id="discount-kpis" class="kpi-row"></div>
+          <div class="breakdown-grid">
+            <div class="breakdown">
+              <h3>Por código de descuento</h3>
+              <table id="table-by-code" class="data-table">
+                <thead><tr><th>Código</th><th>Descuento</th><th>Tasa</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="breakdown">
+              <h3>Por producto</h3>
+              <table id="table-by-sku" class="data-table">
+                <thead><tr><th>Producto</th><th>Descuento</th><th>Tasa</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="leaks">
+          <h2>Fugas encontradas</h2>
+          <div id="leak-cards"></div>
+        </section>
+
+        <section id="early-access" class="early-access band">
+          <h2>¿Quieres que Margiqo vigile esto por ti?</h2>
+          <p>
+            Deja de exportar CSV. Estamos construyendo una monitorización automática de Shopify que te
+            avisa cuando un producto, descuento o promoción empieza a comerse tu margen — mientras aún está activo.
+          </p>
+          <form id="form-early-access">
+            <input type="email" id="input-email" placeholder="tu@tutienda.com" required aria-label="Correo electrónico" />
+            <button type="submit" class="btn btn-primary">Unirme al acceso anticipado</button>
+          </form>
+          <div id="early-access-success" class="early-access-success" hidden>
+            <p class="ea-thanks">Gracias — nos pondremos en contacto.</p>
+            <div id="willingness-question" class="willingness-question">
+              <p>Una pregunta opcional: ¿cuánto valdría para ti una monitorización automática?</p>
+              <div class="willingness-options">
+                <button type="button" class="btn btn-choice" data-value="none">No pagaría por esto</button>
+                <button type="button" class="btn btn-choice" data-value="9">9 €/mes</button>
+                <button type="button" class="btn btn-choice" data-value="19">19 €/mes</button>
+                <button type="button" class="btn btn-choice" data-value="39">39 €/mes</button>
+                <button type="button" class="btn btn-choice" data-value="79plus">79+ €/mes</button>
+              </div>
+              <div id="willingness-thanks" class="willingness-thanks" hidden>Gracias por tu opinión.</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="actions">
+          <button id="btn-restart" class="btn btn-ghost">Escanear otra tienda</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Margiqo es una herramienta independiente. No está afiliada, respaldada ni patrocinada por Shopify. <a href="/es/privacy.html">Política de privacidad</a></p>
+    </div>
+  </footer>
+
+  <template id="tpl-leak-card">
+    <article class="leak-card">
+      <div class="leak-head">
+        <span class="severity-badge"></span>
+        <div class="leak-heading">
+          <h3 class="leak-title"></h3>
+          <div class="leak-subtitle"></div>
+        </div>
+        <div class="leak-margin"></div>
+      </div>
+      <p class="leak-found"></p>
+      <div class="leak-evidence"></div>
+      <p class="leak-not-included" hidden>No incluido en esta cifra: <span class="leak-excluded"></span>.</p>
+      <div class="leak-action">
+        <span class="leak-action-label">Recomendación</span>
+        <p class="leak-todo"></p>
+      </div>
+      <details class="leak-calc">
+        <summary>¿Cómo se calcula esto?</summary>
+        <ol></ol>
+      </details>
+    </article>
+  </template>
+
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>

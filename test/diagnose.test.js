@@ -93,3 +93,29 @@ test("known-margin aggregation never includes an UNKNOWN card's impact", () => {
   // an UNKNOWN card can never contribute a euro amount to it.
   assert.equal(Math.round(result.headline.knownMarginAtRisk), Math.round(Math.abs(knownCard.knownProductMargin)));
 });
+
+test("locale: es produces translated card text with the same computed figures as en", () => {
+  const ordersCsv = [ORDER_HEADER, "#1,EUR,SUMMER20,27,Summer Pack,SUMMER-PACK,68.75,371.25"].join("\n");
+  const productsCsv = [PRODUCT_HEADER, "SUMMER-PACK,Summer Pack,58"].join("\n");
+
+  const en = diagnose({ ordersCsvText: ordersCsv, productsCsvText: productsCsv, locale: "en" });
+  const es = diagnose({ ordersCsvText: ordersCsv, productsCsvText: productsCsv, locale: "es" });
+
+  assert.equal(es.ok, true);
+  assert.equal(es.headline.leaksCount, en.headline.leaksCount);
+  assert.equal(es.headline.knownMarginAtRisk, en.headline.knownMarginAtRisk);
+
+  const card = es.leaks[0];
+  assert.equal(card.severity, "CRITICAL");
+  assert.equal(card.knownProductMargin, en.leaks[0].knownProductMargin);
+  assert.ok(card.whatWeFound.includes("unidades"));
+  assert.ok(card.whatToDo.includes("SUMMER20"));
+  assert.deepEqual(card.notIncluded, ["Comisiones de pago", "Publicidad", "Logística y preparación", "Coste real de envío", "Devoluciones"]);
+});
+
+test("locale defaults to en when omitted", () => {
+  const ordersCsv = [ORDER_HEADER, "#1,EUR,SUMMER20,27,Summer Pack,SUMMER-PACK,68.75,371.25"].join("\n");
+  const productsCsv = [PRODUCT_HEADER, "SUMMER-PACK,Summer Pack,58"].join("\n");
+  const result = diagnose({ ordersCsvText: ordersCsv, productsCsvText: productsCsv });
+  assert.deepEqual(result.leaks[0].notIncluded, NOT_INCLUDED);
+});

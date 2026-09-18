@@ -4,6 +4,11 @@ import { money, pct } from "./lib/format.js";
 import { buildShareSummary } from "./lib/share.js";
 import { submitEarlyAccess } from "./lib/leads.js";
 import { track } from "./lib/analytics.js";
+import { getStrings, getNumberLocale, getLocale } from "./lib/i18n.js";
+
+const locale = getLocale();
+const numberLocale = getNumberLocale(locale);
+const t = getStrings(locale);
 
 const state = { ordersText: null, productsText: null, ordersValid: false, lastReport: null, isDemo: false };
 
@@ -44,17 +49,17 @@ async function onOrdersFile(e) {
 
   if (meta.isEmpty) {
     state.ordersValid = false;
-    setStatus(statusEl, "This file looks empty — export orders again from Shopify Admin → Orders → Export.", "error");
+    setStatus(statusEl, t.app.fileStatus.ordersEmpty, "error");
   } else if (meta.looksLikeProductsFile) {
     state.ordersValid = false;
-    setStatus(statusEl, "This looks like a Products export — upload it in the Products field instead.", "error");
+    setStatus(statusEl, t.app.fileStatus.ordersLooksLikeProducts, "error");
   } else if (meta.missingRequired.length > 0) {
     state.ordersValid = false;
-    setStatus(statusEl, `Missing required column(s): ${meta.missingRequired.join(", ")}. Make sure this is an unmodified Shopify orders export.`, "error");
+    setStatus(statusEl, t.app.fileStatus.ordersMissingColumns(meta.missingRequired.join(", ")), "error");
   } else {
     state.ordersValid = true;
-    const parts = [`${meta.lineItemsCount} order lines across ${meta.ordersCount} orders detected`];
-    if (!meta.hasDiscountData) parts.push("no discount column found — discount analysis will be skipped");
+    const parts = [t.app.fileStatus.ordersOk(meta.lineItemsCount, meta.ordersCount)];
+    if (!meta.hasDiscountData) parts.push(t.app.fileStatus.ordersNoDiscountColumn);
     setStatus(statusEl, `✓ ${parts.join(" — ")}`, meta.hasDiscountData ? "ok" : "warn");
   }
   refreshScanButton();
@@ -69,34 +74,34 @@ async function onProductsFile(e) {
   const { meta } = parseProductsCsv(state.productsText);
 
   if (meta.isEmpty) {
-    setStatus(statusEl, "This file looks empty — margin analysis will stay UNKNOWN.", "warn");
+    setStatus(statusEl, t.app.fileStatus.productsEmpty, "warn");
     state.productsText = null;
     return;
   }
   if (meta.looksLikeOrdersFile) {
-    setStatus(statusEl, "This looks like an Orders export — upload it in the Orders field instead.", "error");
+    setStatus(statusEl, t.app.fileStatus.productsLooksLikeOrders, "error");
     state.productsText = null;
     return;
   }
   if (!meta.hasSkuColumn) {
-    setStatus(statusEl, "Could not find a 'Variant SKU' column — margin analysis will stay UNKNOWN", "warn");
+    setStatus(statusEl, t.app.fileStatus.productsNoSkuColumn, "warn");
     state.productsText = null;
     return;
   }
   if (!meta.hasCostColumn || meta.rowsWithCost === 0) {
-    setStatus(statusEl, "No 'Cost per item' data found — margin analysis will stay UNKNOWN", "warn");
+    setStatus(statusEl, t.app.fileStatus.productsNoCostColumn, "warn");
     return;
   }
-  setStatus(statusEl, `✓ Cost data found for ${meta.rowsWithCost} of ${meta.rowsWithSku} SKUs`, "ok");
+  setStatus(statusEl, `✓ ${t.app.fileStatus.productsOk(meta.rowsWithCost, meta.rowsWithSku)}`, "ok");
 }
 
 function renderKpis(discount, currency) {
   const el = document.getElementById("discount-kpis");
   el.innerHTML = "";
   const items = [
-    ["Gross revenue", money(discount.totalGrossRevenue, currency)],
-    ["Total discount given", money(discount.totalDiscount, currency)],
-    ["Discount rate", pct(discount.discountRateGlobal)],
+    [t.app.kpis.grossRevenue, money(discount.totalGrossRevenue, currency, numberLocale)],
+    [t.app.kpis.totalDiscountGiven, money(discount.totalDiscount, currency, numberLocale)],
+    [t.app.kpis.discountRate, pct(discount.discountRateGlobal)],
   ];
   for (const [label, value] of items) {
     const div = document.createElement("div");
@@ -110,9 +115,9 @@ function renderKpis(discount, currency) {
 function renderScanBasis(meta) {
   const coverage = meta.costCoverage;
   const rows = [
-    ["Orders", meta.ordersCount.toLocaleString()],
-    ["Order lines", meta.lineItemsCount.toLocaleString()],
-    ["Products with a known cost", coverage.skusTotal > 0 ? `${coverage.skusWithCost} of ${coverage.skusTotal}` : "none provided"],
+    [t.app.scanBasis.orders, meta.ordersCount.toLocaleString(numberLocale)],
+    [t.app.scanBasis.orderLines, meta.lineItemsCount.toLocaleString(numberLocale)],
+    [t.app.scanBasis.productsWithCost, coverage.skusTotal > 0 ? `${coverage.skusWithCost} of ${coverage.skusTotal}` : t.app.scanBasis.noneProvided],
   ];
   document.getElementById("scan-basis").innerHTML = rows
     .map(([term, value]) => `<div class="basis-row"><dt>${term}</dt><dd>${value}</dd></div>`)
@@ -123,24 +128,22 @@ function renderTable(tableId, rows, labelFn, currency) {
   const tbody = document.querySelector(`#${tableId} tbody`);
   tbody.innerHTML = "";
   if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="3" class="table-empty">No material discount concentration found</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="3" class="table-empty">${t.app.table.noMaterialConcentration}</td></tr>`;
     return;
   }
   for (const r of rows.slice(0, 6)) {
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${labelFn(r)}</td><td>${money(r.totalDiscount, currency)}</td><td>${pct(r.discountRate)}</td>`;
+    tr.innerHTML = `<td>${labelFn(r)}</td><td>${money(r.totalDiscount, currency, numberLocale)}</td><td>${pct(r.discountRate)}</td>`;
     tbody.appendChild(tr);
   }
 }
-
-const SEVERITY_LABEL = { CRITICAL: "Critical", WARNING: "Warning", INFO: "Info" };
 
 function renderLeakCard(card, currency) {
   const tpl = document.getElementById("tpl-leak-card");
   const node = tpl.content.firstElementChild.cloneNode(true);
   node.dataset.severity = card.severity;
 
-  node.querySelector(".severity-badge").textContent = SEVERITY_LABEL[card.severity] || card.severity;
+  node.querySelector(".severity-badge").textContent = t.app.severity[card.severity] || card.severity;
   node.querySelector(".leak-title").textContent = card.title;
   const subtitleEl = node.querySelector(".leak-subtitle");
   if (card.subtitle) subtitleEl.textContent = card.subtitle;
@@ -148,10 +151,10 @@ function renderLeakCard(card, currency) {
 
   const marginEl = node.querySelector(".leak-margin");
   if (card.knownProductMargin !== null) {
-    marginEl.textContent = money(card.knownProductMargin, currency);
+    marginEl.textContent = money(card.knownProductMargin, currency, numberLocale);
     marginEl.dataset.sign = card.knownProductMargin < 0 ? "negative" : "positive";
   } else {
-    marginEl.textContent = "Margin unknown";
+    marginEl.textContent = t.app.marginUnknown;
     marginEl.dataset.sign = "unknown";
   }
 
@@ -236,7 +239,7 @@ function renderResults(report, isDemo) {
   if (!report.ok) {
     const errorEl = document.getElementById("upload-error");
     errorEl.hidden = false;
-    errorEl.textContent = `Could not run the scan: missing required column(s) (${report.missingRequired.join(", ")}). Make sure this is an unmodified Shopify orders export.`;
+    errorEl.textContent = t.app.resultsError(report.missingRequired.join(", "));
     return;
   }
 
@@ -245,13 +248,13 @@ function renderResults(report, isDemo) {
 
   document.getElementById("demo-banner").hidden = !isDemo;
 
-  document.getElementById("headline-count").textContent = `${report.headline.leaksCount} potential margin leak${report.headline.leaksCount === 1 ? "" : "s"} detected`;
+  document.getElementById("headline-count").textContent = t.app.headline.leaksDetected(report.headline.leaksCount);
   const amountEl = document.getElementById("headline-amount");
   if (report.headline.knownMarginAtRisk > 0) {
-    amountEl.innerHTML = `<span class="fig"></span><span class="qual">known product margin at risk</span>`;
-    amountEl.querySelector(".fig").textContent = money(report.headline.knownMarginAtRisk, report.currency);
+    amountEl.innerHTML = `<span class="fig"></span><span class="qual">${t.app.headline.atRiskQualifier}</span>`;
+    amountEl.querySelector(".fig").textContent = money(report.headline.knownMarginAtRisk, report.currency, numberLocale);
   } else {
-    amountEl.innerHTML = `<span class="fig-none">No known margin at risk found</span>`;
+    amountEl.innerHTML = `<span class="fig-none">${t.app.headline.none}</span>`;
   }
 
   renderScanBasis(report.meta);
@@ -261,7 +264,7 @@ function renderResults(report, isDemo) {
 
   if (report.discountOverview) {
     renderKpis(report.discountOverview, report.currency);
-    renderTable("table-by-code", report.discountOverview.byCode, (r) => r.code || "(no code)", report.currency);
+    renderTable("table-by-code", report.discountOverview.byCode, (r) => r.code || t.app.table.noCode, report.currency);
     renderTable("table-by-sku", report.discountOverview.bySku, (r) => r.name, report.currency);
     document.querySelector(".overview").hidden = false;
   } else {
@@ -271,7 +274,7 @@ function renderResults(report, isDemo) {
   const cardsEl = document.getElementById("leak-cards");
   cardsEl.innerHTML = "";
   if (report.leaks.length === 0) {
-    cardsEl.innerHTML = `<p style="color:var(--muted)">No leaks matched our detection thresholds in this data.</p>`;
+    cardsEl.innerHTML = `<p style="color:var(--muted)">${t.app.noLeaksMatched}</p>`;
   } else {
     for (const card of report.leaks) cardsEl.appendChild(renderLeakCard(card, report.currency));
   }
@@ -285,26 +288,26 @@ function renderResults(report, isDemo) {
 
 async function runDemoScan() {
   track("demo_started");
-  const [ordersRes, productsRes] = await Promise.all([fetch("demo-data/orders.csv"), fetch("demo-data/products.csv")]);
+  const [ordersRes, productsRes] = await Promise.all([fetch("/demo-data/orders.csv"), fetch("/demo-data/products.csv")]);
   const ordersCsvText = await ordersRes.text();
   const productsCsvText = await productsRes.text();
-  const report = diagnose({ ordersCsvText, productsCsvText });
+  const report = diagnose({ ordersCsvText, productsCsvText, locale });
   renderResults(report, true);
 }
 
 function copySummary() {
   if (!state.lastReport) return;
-  const text = buildShareSummary(state.lastReport, { isDemo: state.isDemo });
+  const text = buildShareSummary(state.lastReport, { isDemo: state.isDemo, locale });
   const btn = document.getElementById("btn-copy-summary");
   navigator.clipboard
     .writeText(text)
     .then(() => {
       const original = btn.textContent;
-      btn.textContent = "Copied!";
+      btn.textContent = t.app.copySummary.copied;
       setTimeout(() => (btn.textContent = original), 1500);
     })
     .catch(() => {
-      btn.textContent = "Could not copy";
+      btn.textContent = t.app.copySummary.couldNotCopy;
     });
 }
 
@@ -321,7 +324,7 @@ function wire() {
 
   document.getElementById("btn-scan").addEventListener("click", () => {
     track("real_scan_started");
-    const report = diagnose({ ordersCsvText: state.ordersText, productsCsvText: state.productsText });
+    const report = diagnose({ ordersCsvText: state.ordersText, productsCsvText: state.productsText, locale });
     renderResults(report, false);
   });
 
