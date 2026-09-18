@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Privacy Policy — Margiqo</title>
+  <meta name="description" content="What Margiqo collects, why, and how to ask for it back — in plain language, matching exactly what the code does." />
+  <link rel="canonical" href="https://margiqo.com/privacy.html" />
+  <meta name="theme-color" content="#092321" />
+  <meta name="robots" content="index,follow" />
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar band">
+    <div class="wrap topbar-inner">
+      <a href="/" style="color:inherit;text-decoration:none;">
+        <span class="wordmark">
+          <svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect class="mark-bar" x="2" y="4" width="4.5" height="9" />
+            <rect class="mark-bar" x="9.75" y="7" width="4.5" height="6" />
+            <rect class="mark-bar mark-bar-leak" x="17.5" y="13" width="4.5" height="7" />
+            <line x1="0" y1="13" x2="24" y2="13" />
+          </svg>
+          Margiqo
+        </span>
+      </a>
+      <span class="tag">prototype</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap section" style="max-width: 760px;">
+      <h1 class="page-title">Privacy Policy</h1>
+      <p class="lede lede-paper">Effective 18 September 2026. Written to match exactly what the code does — see <a href="https://github.com/MariCreu/Margiqo/blob/main/docs/PRIVACY.md">docs/PRIVACY.md</a> in the source for the technical version of every claim below.</p>
+
+      <h2>Who is responsible for this data</h2>
+      <p>Mari Cruz Martínez Sanchis (autónoma), operating Margiqo. Contact for any privacy question or request: <a href="mailto:privacy@margiqo.com">privacy@margiqo.com</a>.</p>
+
+      <h2>Two different things happen on this site — only one of them is "your data" to us</h2>
+      <p>
+        <strong>Scanning your store's CSV exports never involves us at all.</strong> The upload, the analysis,
+        and the result are computed entirely by JavaScript running in your own browser. Your orders export,
+        your product costs, your revenue figures, your SKUs — none of it is ever sent to any server, so we
+        never receive it, never store it, and have nothing to delete, because we never had it. You can verify
+        this yourself: open your browser's network inspector while scanning, or read the source.
+      </p>
+      <p>
+        <strong>Joining early access is the one thing that does send us data</strong> — only when you type
+        your email into the form and press submit. Everything below is about that.
+      </p>
+
+      <h2>What we collect when you join early access</h2>
+      <p>Submitting the early-access form sends, to our own server (a Cloudflare Worker at <code>/api/early-access</code>, nothing on any third party's server):</p>
+      <ul>
+        <li><strong>Your email address</strong></li>
+        <li>The hostname that referred you here, if any (e.g. <code>google.com</code>) — never the full URL or any query string</li>
+        <li>Whether you scanned a demo store or your own</li>
+        <li>How many leaks the scan found, and whether margin analysis was unlocked (i.e. whether you'd provided product costs) — two numbers, not the underlying data</li>
+        <li>Your answer to the optional "what would this be worth to you" question, if you answered it</li>
+      </ul>
+      <p>
+        That is the complete list. The server enforces it independently of the page you're looking at — a bug in
+        the page, or a hand-crafted request, cannot smuggle anything else into storage. Nothing about your store —
+        no SKU, no revenue figure, no order content, no filename — is on this list because none of it is ever
+        sent.
+      </p>
+
+      <h2>Why we collect it, and on what legal basis</h2>
+      <p>
+        To let you know when automatic Shopify monitoring (the "what's next" feature described on the scan
+        result) becomes available, and — if you answer the optional pricing question — to understand whether
+        it's worth building. The legal basis is your consent: you gave us your email by choosing to submit the
+        form. Nothing is collected before that action, and nothing is inferred or purchased from elsewhere.
+      </p>
+
+      <h2>Where it's stored</h2>
+      <p>
+        In Cloudflare Workers KV, a storage service belonging to Cloudflare, Inc., which acts as our data
+        processor for this purpose. We use no other data-processing vendor, no analytics platform, and no CRM.
+      </p>
+
+      <h2>How long we keep it</h2>
+      <p>
+        Until you ask us to delete it, or until the early-access programme this data supports is discontinued —
+        whichever comes first. There is no automatic expiry, because there is no ongoing processing to justify
+        one beyond the purpose above.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        Under GDPR you can ask us, at any time, to: tell you what we hold about you, correct it, delete it, or
+        stop using it. Email <a href="mailto:privacy@margiqo.com">privacy@margiqo.com</a> from the address in
+        question (so we can find and verify the record) and we'll respond within one month. You can also
+        complain to your local data protection authority — in Spain, the
+        <a href="https://www.aepd.es" target="_blank" rel="noopener">AEPD</a> — if you're unhappy with how we
+        handle a request.
+      </p>
+
+      <h2>No cookies, no trackers, no third parties</h2>
+      <p>
+        This page sets no cookies and loads nothing from any third-party domain — no analytics vendor, no
+        embedded widget, no font CDN (the typeface is served from this same domain specifically so that loading
+        this page doesn't itself leak your IP address to a CDN). The only network request this site ever makes
+        to us is the early-access submission described above.
+      </p>
+
+      <h2>Children</h2>
+      <p>Margiqo is a business tool for Shopify merchants and isn't directed at children. We don't knowingly collect data from anyone under 16.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>If what the code actually does changes, this page changes with it — that's the standard we're holding ourselves to. Check the effective date above.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Margiqo is an independent tool. It is not affiliated with, endorsed by or sponsored by Shopify. <a href="/privacy.html">Privacy Policy</a></p>
+    </div>
+  </footer>
+</body>
+</html>
